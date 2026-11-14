@@ -84,63 +84,6 @@ function cacheKey(url: URL) {
   return new Request(key.toString(), { method: "GET" });
 }
 
-/**
- * Inlines the app stylesheet into the HTML (<link rel=stylesheet> → <style>). The CSS was the only
- * render-blocking request; inlining saves a round trip on first paint. The file is read once per
- * isolate from the static assets binding. Falls back to the original <link> on any error.
- */
-const cssCache = new Map<string, string>();
-/** INLINE_CSS=false (Worker var) turns inlining off without a rebuild. */
-const inlineCssEnabled = () =>
-  (globalThis as { __env__?: { INLINE_CSS?: string } }).__env__?.INLINE_CSS !== "false";
-type AssetsBinding = { fetch: (req: Request) => Promise<Response> };
-type RewriterElement = {
-  getAttribute: (name: string) => string | null;
-  replace: (content: string, opts: { html: boolean }) => void;
-  remove: () => void;
-};
-type Rewriter = {
-  on: (selector: string, handler: { element: (el: RewriterElement) => void }) => Rewriter;
-  transform: (r: Response) => Response;
-};
-type RewriterCtor = new () => Rewriter;
-/** PRELOAD_FONTS=false (Worker var) drops the hero font preloads (A/B measurement switch). */
-const preloadFontsEnabled = () =>
-  (globalThis as { __env__?: { PRELOAD_FONTS?: string } }).__env__?.PRELOAD_FONTS !== "false";
-
-async function inlineStylesheets(response: Response, url: URL): Promise<Response> {
-  const Rewriter = (globalThis as { HTMLRewriter?: RewriterCtor }).HTMLRewriter;
-  const assets = (globalThis as { __env__?: { ASSETS?: AssetsBinding } }).__env__?.ASSETS;
-  if (!Rewriter || !assets) return response;
-  const hrefs: string[] = [];
-  const html = await response.clone().text();
-  for (const m of html.matchAll(/<link[^>]+rel="stylesheet"[^>]+href="(\/assets\/[^"]+\.css)"/g))
-    if (m[1]) hrefs.push(m[1]);
-  for (const href of hrefs) {
-    if (cssCache.has(href)) continue;
-    try {
-      const r = await assets.fetch(new Request(new URL(href, url.origin)));
-      if (r.ok) cssCache.set(href, await r.text());
-    } catch {
-      /* keep the <link> */
-    }
-  }
-  return new Rewriter()
-    .on('link[rel="stylesheet"]', {
-      element(el) {
-        const css = cssCache.get(el.getAttribute("href") ?? "");
-        if (css)
-          el.replace(`<style>${css.replace(/<\/style/gi, "<\\/style")}</style>`, { html: true });
-      },
-    })
-    .on('link[rel="preload"][as="font"]', {
-      element(el) {
-        if (!preloadFontsEnabled()) el.remove();
-      },
-    })
-    .transform(response);
-}
-
 const isHtml = (r: Response) => (r.headers.get("content-type") ?? "").includes("text/html");
 
 function withHeader(r: Response, name: string, value: string) {
@@ -219,9 +162,9 @@ export default {
         if (hit) return withHeader(hit, "x-edge-cache", "HIT");
       }
       const handler = await getServerEntry();
-      let response = await normalizeCatastrophicSsrResponse(await handler.fetch(request, env, ctx));
-      if (response.status === 200 && isHtml(response) && inlineCssEnabled())
-        response = await inlineStylesheets(response, url);
+      const response = await normalizeCatastrophicSsrResponse(
+        await handler.fetch(request, env, ctx),
+      );
       if (
         edge &&
         response.status === 200 &&
