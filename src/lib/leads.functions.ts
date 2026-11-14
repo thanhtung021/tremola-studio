@@ -1,71 +1,127 @@
-import { createClient } from "@supabase/supabase-js";
+/**
+ * Public lead-capture server functions. Every submission:
+ *   1. is validated with the shared zod schema (same as the client),
+ *   2. is dropped silently when the honeypot is filled,
+ *   3. passes per-IP and per-email rate limits,
+ *   4. is written with the server-only service role (the browser has no INSERT rights),
+ *   5. triggers notification emails; email failures are logged, never shown to the visitor.
+ * `qualified` is computed here only and never returned to the browser.
+ */
 import { createServerFn } from "@tanstack/react-start";
-import type { Database } from "@/integrations/supabase/types";
 import { auditSchema, contactSchema, isQualified, packSchema } from "./leads";
 
-function publicClient() {
-  const url = process.env["SUPABASE_URL"]!;
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-  return createClient<Database>(url, key, {
-    auth: { persistSession: false, autoRefreshToken: false },
-    global: {
-      fetch: (input, init) => {
-        const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
-          h.delete("Authorization");
-        h.set("apikey", key);
-        return fetch(input, { ...init, headers: h });
-      },
-    },
-  });
-}
+const HOUR = 3600;
+const DAY = 86400;
+
+export class SubmissionError extends Error {}
 
 export const submitContactMessage = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => contactSchema.parse(input))
   .handler(async ({ data }) => {
-    const { error } = await publicClient().from("contact_submissions").insert(data);
-    if (error) throw new Error("Could not save your message");
+    if (data.website) return { ok: true };
+    const { requestContext, withinRateLimits, logSubmissionError } =
+      await import("@/server/leads.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { sendInternalNotification } = await import("@/server/email.server");
+    const ctx = requestContext();
+    if (
+      !(await withinRateLimits([
+        { bucket: "contact:ip", key: ctx.ip, max: 5, windowSeconds: HOUR },
+      ]))
+    )
+      throw new SubmissionError("Too many messages. Please try again later.");
+
+    const row = {
+      locale: data.locale,
+      name: data.name,
+      email: data.email,
+      company: data.company,
+      message: data.message,
+    };
+    const { error } = await supabaseAdmin.from("contact_submissions").insert(row);
+    if (error) {
+      await logSubmissionError("contact", "insert", error.message, data.locale);
+      throw new SubmissionError("Could not save your message");
+    }
+    const mail = await sendInternalNotification("contact", row);
+    if (!mail.ok) await logSubmissionError("contact", "notify", mail.error, data.locale);
     return { ok: true };
   });
 
 export const submitAuditRequest = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => auditSchema.parse(input))
   .handler(async ({ data }) => {
-    const { error } = await publicClient()
-      .from("audit_requests")
-      .insert({
-        locale: data.locale,
-        name: data.name,
-        email: data.email,
-        company: data.company,
-        role: data.role,
-        listen_to: data.listenTo,
-        link: data.link,
-        team_size: data.teamSize,
-        launch: data.launch,
-        budget: data.budget,
-        pain: data.pain || null,
-        heard_from: data.heardFrom || null,
-        app_status: data.appStatus || null,
-        qualified: isQualified(data.launch, data.budget),
-        utm_source: data.utm_source,
-        utm_medium: data.utm_medium,
-        utm_campaign: data.utm_campaign,
-        utm_content: data.utm_content,
-        referrer: data.referrer,
-        landing_page: data.landing_page,
-      });
+    if (data.website) return { ok: true };
+    const { requestContext, withinRateLimits, logSubmissionError } =
+      await import("@/server/leads.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { sendInternalNotification, sendVisitorConfirmation } =
+      await import("@/server/email.server");
+    const ctx = requestContext();
+    const allowed = await withinRateLimits([
+      { bucket: "audit:ip", key: ctx.ip, max: 5, windowSeconds: HOUR },
+      { bucket: "audit:email", key: data.email, max: 3, windowSeconds: DAY },
+    ]);
+    if (!allowed) throw new SubmissionError("Too many requests. Please try again later.");
+
+    const row = {
+      locale: data.locale,
+      name: data.name,
+      email: data.email,
+      company: data.company,
+      role: data.role,
+      listen_to: data.listenTo,
+      link: data.link,
+      team_size: data.teamSize,
+      launch: data.launch,
+      budget: data.budget,
+      pain: data.pain || null,
+      heard_from: data.heardFrom || null,
+      app_status: data.appStatus || null,
+      qualified: isQualified(data.launch, data.budget),
+      utm_source: data.utm_source,
+      utm_medium: data.utm_medium,
+      utm_campaign: data.utm_campaign,
+      utm_content: data.utm_content,
+      referrer: data.referrer,
+      landing_page: data.landing_page,
+    };
+    const { error } = await supabaseAdmin.from("audit_requests").insert(row);
     if (error) {
-      console.error("audit insert failed", error.message);
-      throw new Error("Could not save your request");
+      await logSubmissionError("audit", "insert", error.message, data.locale);
+      throw new SubmissionError("Could not save your request");
     }
+
+    const [internal, visitor] = await Promise.all([
+      sendInternalNotification("audit", { ...row, country: ctx.country }),
+      sendVisitorConfirmation("audit", data.locale, data.email, { name: data.name }),
+    ]);
+    if (!internal.ok)
+      await logSubmissionError("audit", "notify_internal", internal.error, data.locale);
+    if (!visitor.ok)
+      await logSubmissionError("audit", "notify_visitor", visitor.error, data.locale);
     return { ok: true };
   });
 
 export const submitPackSignup = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => packSchema.parse(input))
-  .handler(async ({ data }) => {
-    const { error } = await publicClient().from("pack_signups").insert({
+  .handler(async ({ data }): Promise<{ ok: true; downloadUrl: string | null }> => {
+    if (data.website) return { ok: true, downloadUrl: null };
+    const { requestContext, withinRateLimits, logSubmissionError } =
+      await import("@/server/leads.server");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { sendInternalNotification, sendVisitorConfirmation } =
+      await import("@/server/email.server");
+    const { signDownload, downloadPath } = await import("@/server/download.server");
+    const { env } = await import("@/server/env.server");
+    const ctx = requestContext();
+    const allowed = await withinRateLimits([
+      { bucket: "pack:ip", key: ctx.ip, max: 10, windowSeconds: HOUR },
+      { bucket: "pack:email", key: data.email, max: 5, windowSeconds: DAY },
+    ]);
+    if (!allowed) throw new SubmissionError("Too many requests. Please try again later.");
+
+    const row = {
       locale: data.locale,
       name: data.name,
       email: data.email,
@@ -76,10 +132,35 @@ export const submitPackSignup = createServerFn({ method: "POST" })
       utm_content: data.utm_content,
       referrer: data.referrer,
       landing_page: data.landing_page,
-    });
-    if (error) {
-      console.error("pack insert failed", error.message);
-      throw new Error("Could not save your signup");
+    };
+    const { data: saved, error } = await supabaseAdmin
+      .from("pack_signups")
+      .insert(row)
+      .select("id")
+      .single();
+    if (error || !saved) {
+      await logSubmissionError("pack", "insert", error?.message ?? "no row", data.locale);
+      throw new SubmissionError("Could not save your signup");
     }
-    return { ok: true };
+
+    let downloadUrl: string | null = null;
+    try {
+      downloadUrl = downloadPath(await signDownload(saved.id));
+    } catch (e) {
+      await logSubmissionError("pack", "sign", e, data.locale);
+    }
+    const site = env("SITE_URL") ?? "";
+    const [internal, visitor] = await Promise.all([
+      sendInternalNotification("pack", { ...row, country: ctx.country }),
+      downloadUrl
+        ? sendVisitorConfirmation("pack", data.locale, data.email, {
+            name: data.name,
+            link: `${site}${downloadUrl}`,
+          })
+        : Promise.resolve({ ok: true as boolean, error: undefined as string | undefined }),
+    ]);
+    if (!internal.ok)
+      await logSubmissionError("pack", "notify_internal", internal.error, data.locale);
+    if (!visitor.ok) await logSubmissionError("pack", "notify_visitor", visitor.error, data.locale);
+    return { ok: true, downloadUrl };
   });

@@ -28,33 +28,55 @@ const attribution = {
   landing_page: z.string().max(500).nullable(),
 };
 
+/** Honeypot: a visually hidden field real visitors leave empty. Bots that fill it get a silent fake success. */
+const honeypot = { website: z.string().max(500).optional() };
+
+/** "YYYY-MM" with a real month (01-12). */
+export const isValidLaunch = (v: string) => {
+  const m = /^(\d{4})-(\d{2})$/.exec(v);
+  return !!m && Number(m[2]) >= 1 && Number(m[2]) <= 12;
+};
+
 const oneOf = (values: readonly string[], msg: string) =>
   z.string().refine((v) => values.includes(v), { message: msg });
 
-export const auditSchema = z.object({
-  locale: z.enum(["en", "vi"]),
-  name: z.string().trim().min(1, "name").max(120, "name"),
-  email: z.string().trim().email("email").max(255, "email"),
-  company: z.string().trim().min(1, "company").max(160, "company"),
-  role: oneOf(auditOptions.role, "role"),
-  listenTo: oneOf(auditOptions.listenTo, "listenTo"),
-  link: z
-    .string()
-    .trim()
-    .url("link")
-    .max(500, "link")
-    .refine((v) => /^https?:\/\//i.test(v), "link"),
-  teamSize: oneOf(auditOptions.teamSize, "teamSize"),
-  launch: z
-    .string()
-    .regex(/^\d{4}-\d{2}$/, "launch")
-    .nullable(),
-  budget: oneOf([...auditOptions.budgetEn, ...auditOptions.budgetVi], "budget"),
-  pain: z.string().trim().max(2000, "pain").optional(),
-  heardFrom: z.union([oneOf(auditOptions.heardFrom, "heardFrom"), z.literal("")]).optional(),
-  appStatus: z.union([oneOf(auditOptions.appStatus, "appStatus"), z.literal("")]).optional(),
-  ...attribution,
-});
+export const auditSchema = z
+  .object({
+    locale: z.enum(["en", "vi"]),
+    name: z.string().trim().min(1, "name").max(120, "name"),
+    email: z.string().trim().email("email").max(255, "email"),
+    company: z.string().trim().min(1, "company").max(160, "company"),
+    role: oneOf(auditOptions.role, "role"),
+    listenTo: oneOf(auditOptions.listenTo, "listenTo"),
+    link: z
+      .string()
+      .trim()
+      .url("link")
+      .max(500, "link")
+      .refine((v) => /^https?:\/\//i.test(v), "link"),
+    teamSize: oneOf(auditOptions.teamSize, "teamSize"),
+    launch: z
+      .string()
+      .regex(/^\d{4}-\d{2}$/, "launch")
+      .nullable(),
+    budget: oneOf([...auditOptions.budgetEn, ...auditOptions.budgetVi], "budget"),
+    pain: z.string().trim().max(2000, "pain").optional(),
+    heardFrom: z.union([oneOf(auditOptions.heardFrom, "heardFrom"), z.literal("")]).optional(),
+    appStatus: z.union([oneOf(auditOptions.appStatus, "appStatus"), z.literal("")]).optional(),
+    ...attribution,
+    ...honeypot,
+  })
+  .superRefine((v, ctx) => {
+    if (v.launch !== null && !isValidLaunch(v.launch))
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["launch"], message: "launch" });
+    // The Vietnamese form asks whether the visitor already has an app; it is required there.
+    if (v.locale === "vi" && !v.appStatus)
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["appStatus"], message: "appStatus" });
+    const budgets: readonly string[] =
+      v.locale === "vi" ? auditOptions.budgetVi : auditOptions.budgetEn;
+    if (!budgets.includes(v.budget))
+      ctx.addIssue({ code: z.ZodIssueCode.custom, path: ["budget"], message: "budget" });
+  });
 export type AuditInput = z.infer<typeof auditSchema>;
 
 export const packSchema = z.object({
@@ -63,6 +85,7 @@ export const packSchema = z.object({
   email: z.string().trim().email("email").max(255, "email"),
   making: oneOf(auditOptions.making, "making"),
   ...attribution,
+  ...honeypot,
 });
 export type PackInput = z.infer<typeof packSchema>;
 
@@ -72,4 +95,5 @@ export const contactSchema = z.object({
   email: z.string().trim().email().max(255),
   company: z.string().trim().max(160),
   message: z.string().trim().min(1).max(2000),
+  ...honeypot,
 });

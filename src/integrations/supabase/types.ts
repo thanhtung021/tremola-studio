@@ -1,3 +1,4 @@
+// Hand-maintained to match supabase/migrations. Regenerate with `supabase gen types` when the CLI is linked.
 export type Json = string | number | boolean | null | { [key: string]: Json | undefined } | Json[];
 
 export type Database = {
@@ -10,6 +11,9 @@ export type Database = {
     Tables: {
       audit_requests: {
         Row: {
+          notes: string | null;
+          status: string;
+          status_updated_at: string | null;
           app_status: string | null;
           budget: string;
           company: string;
@@ -34,6 +38,9 @@ export type Database = {
           utm_source: string | null;
         };
         Insert: {
+          notes?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
           app_status?: string | null;
           budget: string;
           company: string;
@@ -58,6 +65,9 @@ export type Database = {
           utm_source?: string | null;
         };
         Update: {
+          notes?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
           app_status?: string | null;
           budget?: string;
           company?: string;
@@ -115,6 +125,9 @@ export type Database = {
       };
       pack_signups: {
         Row: {
+          notes: string | null;
+          status: string;
+          status_updated_at: string | null;
           created_at: string;
           email: string;
           id: string;
@@ -129,6 +142,9 @@ export type Database = {
           utm_source: string | null;
         };
         Insert: {
+          notes?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
           created_at?: string;
           email: string;
           id?: string;
@@ -143,6 +159,9 @@ export type Database = {
           utm_source?: string | null;
         };
         Update: {
+          notes?: string | null;
+          status?: string;
+          status_updated_at?: string | null;
           created_at?: string;
           email?: string;
           id?: string;
@@ -155,6 +174,105 @@ export type Database = {
           utm_content?: string | null;
           utm_medium?: string | null;
           utm_source?: string | null;
+        };
+        Relationships: [];
+      };
+      founding_slots: {
+        Row: {
+          id: boolean;
+          remaining: number;
+          total: number;
+          updated_at: string;
+        };
+        Insert: {
+          id?: boolean;
+          remaining?: number;
+          total?: number;
+          updated_at?: string;
+        };
+        Update: {
+          id?: boolean;
+          remaining?: number;
+          total?: number;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
+      pack_downloads: {
+        Row: {
+          country: string | null;
+          created_at: string;
+          id: string;
+          ip_hash: string | null;
+          object_key: string;
+          signup_id: string | null;
+          user_agent: string | null;
+        };
+        Insert: {
+          country?: string | null;
+          created_at?: string;
+          id?: string;
+          ip_hash?: string | null;
+          object_key: string;
+          signup_id?: string | null;
+          user_agent?: string | null;
+        };
+        Update: {
+          country?: string | null;
+          created_at?: string;
+          id?: string;
+          ip_hash?: string | null;
+          object_key?: string;
+          signup_id?: string | null;
+          user_agent?: string | null;
+        };
+        Relationships: [];
+      };
+      rate_limits: {
+        Row: {
+          bucket: string;
+          hits: number;
+          key_hash: string;
+          window_start: string;
+        };
+        Insert: {
+          bucket: string;
+          hits?: number;
+          key_hash: string;
+          window_start: string;
+        };
+        Update: {
+          bucket?: string;
+          hits?: number;
+          key_hash?: string;
+          window_start?: string;
+        };
+        Relationships: [];
+      };
+      submission_errors: {
+        Row: {
+          created_at: string;
+          form: string;
+          id: string;
+          locale: string | null;
+          message: string;
+          stage: string;
+        };
+        Insert: {
+          created_at?: string;
+          form: string;
+          id?: string;
+          locale?: string | null;
+          message: string;
+          stage: string;
+        };
+        Update: {
+          created_at?: string;
+          form?: string;
+          id?: string;
+          locale?: string | null;
+          message?: string;
+          stage?: string;
         };
         Relationships: [];
       };
@@ -181,6 +299,15 @@ export type Database = {
       [_ in never]: never;
     };
     Functions: {
+      rate_limit_hit: {
+        Args: {
+          _bucket: string;
+          _key_hash: string;
+          _max: number;
+          _window_seconds: number;
+        };
+        Returns: boolean;
+      };
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"];

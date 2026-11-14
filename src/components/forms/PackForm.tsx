@@ -1,14 +1,13 @@
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/config/site";
 import { packCopy } from "@/content/forms";
 import type { Locale } from "@/i18n";
 import { getAttribution } from "@/lib/attribution";
 import { packSchema } from "@/lib/leads";
 import { submitPackSignup } from "@/lib/leads.functions";
 import { track } from "@/lib/track";
-import { Field, inputClass, Select } from "./Field";
+import { Field, Honeypot, honeypotValue, inputClass, Select } from "./Field";
 
 export function PackForm({ locale }: { locale: Locale }) {
   const c = packCopy[locale];
@@ -16,10 +15,16 @@ export function PackForm({ locale }: { locale: Locale }) {
   const [v, setV] = useState({ name: "", email: "", making: "" });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const parsed = packSchema.safeParse({ locale, ...v, ...getAttribution() });
+    const parsed = packSchema.safeParse({
+      locale,
+      ...v,
+      ...getAttribution(),
+      website: honeypotValue(e.currentTarget as HTMLFormElement),
+    });
     if (!parsed.success) {
       const errs: Record<string, string> = {};
       for (const i of parsed.error.issues)
@@ -30,7 +35,8 @@ export function PackForm({ locale }: { locale: Locale }) {
     }
     setState("sending");
     try {
-      await submit({ data: parsed.data });
+      const res = await submit({ data: parsed.data });
+      setDownloadUrl(res.downloadUrl);
       track("pack_signup", { locale, making: v.making });
       setState("done");
     } catch {
@@ -41,13 +47,13 @@ export function PackForm({ locale }: { locale: Locale }) {
   if (state === "done") {
     return (
       <div className="card-tremola p-10" role="status">
-        <Button asChild size="lg">
-          <a href={siteConfig.freePackUrl} download>
-            {c.download}
-          </a>
-        </Button>
-        {siteConfig.freePackIsPlaceholder && (
-          <p className="label-mono mt-3 text-muted-foreground">Placeholder link</p>
+        {downloadUrl && (
+          <Button asChild size="lg">
+            {/* Signed, time-limited link served by /api/pack/download (private R2 bucket). */}
+            <a href={downloadUrl} rel="nofollow">
+              {c.download}
+            </a>
+          </Button>
         )}
         <p className="mt-6 text-ivory">{c.inbox}</p>
       </div>
@@ -64,6 +70,7 @@ export function PackForm({ locale }: { locale: Locale }) {
       onSubmit={onSubmit}
       className="space-y-8 rounded-card border border-hairline bg-surface p-6 md:p-10"
     >
+      <Honeypot />
       <h2 className="text-[28px]">{c.formTitle}</h2>
       <Field id="p-name" label={c.fields.name} required error={errors["name"] || undefined}>
         <input

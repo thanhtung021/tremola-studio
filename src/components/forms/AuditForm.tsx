@@ -10,7 +10,7 @@ import { auditSchema } from "@/lib/leads";
 import { submitAuditRequest } from "@/lib/leads.functions";
 import { track } from "@/lib/track";
 import { cn } from "@/lib/utils";
-import { Field, inputClass, Select } from "./Field";
+import { Field, Honeypot, honeypotValue, inputClass, Select } from "./Field";
 
 const empty = {
   name: "",
@@ -68,6 +68,7 @@ export function AuditForm({ locale }: { locale: Locale }) {
       heardFrom: v.heardFrom || undefined,
       appStatus: locale === "vi" ? v.appStatus : undefined,
       ...getAttribution(),
+      website: honeypotValue(e.currentTarget as HTMLFormElement),
     };
     const parsed = auditSchema.safeParse(input);
     const errs: Record<string, string> = {};
@@ -130,6 +131,7 @@ export function AuditForm({ locale }: { locale: Locale }) {
       onSubmit={onSubmit}
       className="space-y-8 rounded-card border border-hairline bg-surface p-6 md:p-10"
     >
+      <Honeypot />
       <Field id="a-name" label={f.name} required error={err("name")}>
         {text("name", "text", { autoComplete: "name", maxLength: "120" })}
       </Field>

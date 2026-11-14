@@ -75,3 +75,31 @@ export function Select({
     </select>
   );
 }
+
+/**
+ * Spam honeypot: off-screen, unfocusable and hidden from assistive tech, so real visitors never
+ * see or fill it. Bots that do are silently discarded on the server. Read it with `honeypotValue`.
+ */
+export function Honeypot() {
+  return (
+    <div
+      aria-hidden="true"
+      style={{
+        position: "absolute",
+        left: "-10000px",
+        top: "auto",
+        width: 1,
+        height: 1,
+        overflow: "hidden",
+      }}
+    >
+      <label>
+        Website
+        <input type="text" name="website" tabIndex={-1} autoComplete="off" defaultValue="" />
+      </label>
+    </div>
+  );
+}
+
+export const honeypotValue = (form: HTMLFormElement) =>
+  String(new FormData(form).get("website") ?? "").slice(0, 500) || undefined;

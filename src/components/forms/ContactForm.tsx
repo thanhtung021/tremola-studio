@@ -6,7 +6,7 @@ import { contactCopy } from "@/content/contact";
 import type { Locale } from "@/i18n";
 import { contactSchema } from "@/lib/leads";
 import { submitContactMessage } from "@/lib/leads.functions";
-import { Field, inputClass } from "./Field";
+import { Field, Honeypot, honeypotValue, inputClass } from "./Field";
 
 export function ContactForm({ locale }: { locale: Locale }) {
   const c = contactCopy[locale];
@@ -21,7 +21,11 @@ export function ContactForm({ locale }: { locale: Locale }) {
   async function onSubmit(event: FormEvent) {
     event.preventDefault();
     if (state === "sending") return;
-    const parsed = contactSchema.safeParse({ locale, ...values });
+    const parsed = contactSchema.safeParse({
+      locale,
+      ...values,
+      website: honeypotValue(event.currentTarget as HTMLFormElement),
+    });
     if (!parsed.success) {
       const next: Record<string, string> = {};
       for (const issue of parsed.error.issues)
@@ -51,6 +55,7 @@ export function ContactForm({ locale }: { locale: Locale }) {
       className="space-y-6"
       aria-label={locale === "vi" ? "Liên hệ Tremola Studio" : "Contact Tremola Studio"}
     >
+      <Honeypot />
       <fieldset disabled={state === "sending"} className="grid min-w-0 gap-6 sm:grid-cols-2">
         {(["name", "email", "company"] as const).map((key) => (
           <div key={key} className={key === "company" ? "sm:col-span-2" : "min-w-0"}>
