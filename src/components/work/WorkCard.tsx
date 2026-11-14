@@ -3,10 +3,24 @@ import { useAudio } from "@/components/audio/AudioProvider";
 import { PlayButton } from "@/components/audio/PlayButton";
 import { kindBadge, lineLabels, localizeWork, type Work } from "@/data/work";
 import { useLocale } from "@/i18n";
+import { responsiveImage } from "@/lib/utils";
 import { cn } from "@/lib/utils";
 import { toTrack } from "./toTrack";
 
-export function WorkCard({ work, featured }: { work: Work; featured?: boolean }) {
+export function WorkCard({
+  work,
+  featured,
+  priority,
+  headingLevel = 3,
+}: {
+  work: Work;
+  featured?: boolean;
+  /** Above-the-fold card: load eagerly with high priority (LCP image). */
+  priority?: boolean;
+  /** 2 on pages without a section h2 above the cards (keeps heading order valid). Looks identical. */
+  headingLevel?: 2 | 3;
+}) {
+  const Heading = headingLevel === 2 ? "h2" : "h3";
   const { current, playing, toggle } = useAudio();
   const { locale } = useLocale();
   const w = localizeWork(work, locale);
@@ -38,8 +52,11 @@ export function WorkCard({ work, featured }: { work: Work; featured?: boolean })
         ) : (
           <img
             src={w.cover.src}
+            {...responsiveImage(w.cover.src)}
+            sizes={featured ? "100vw" : "(min-width: 768px) 50vw, 100vw"}
             alt={w.cover.alt}
-            loading="lazy"
+            loading={priority ? "eager" : "lazy"}
+            {...(priority ? { fetchPriority: "high" as const } : {})}
             width={1600}
             height={912}
             className="size-full object-cover transition-transform duration-600 ease-tremola group-hover:scale-103"
@@ -65,9 +82,14 @@ export function WorkCard({ work, featured }: { work: Work; featured?: boolean })
         )}
       </div>
       <div className="p-6">
-        <h3 className={featured ? "text-[36px]" : "text-[28px]"}>
+        <Heading
+          className={cn(
+            featured ? "text-[36px]" : "text-[28px]",
+            headingLevel === 2 && "font-semibold leading-[1.2]",
+          )}
+        >
           <Link {...linkProps}>{w.title}</Link>
-        </h3>
+        </Heading>
         <p className="label-mono mt-2 text-muted-foreground">
           {lineLabels[w.line]} · {w.tags.join(" · ")}
         </p>

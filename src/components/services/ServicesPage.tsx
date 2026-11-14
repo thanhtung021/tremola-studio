@@ -79,7 +79,7 @@ export function ServicesPage({ locale }: { locale: Locale }) {
   const audit = locale === "vi" ? ("/vi/sound-audit" as const) : ("/sound-audit" as const);
   return (
     <div className="pt-40">
-      <Reveal className="container-site">
+      <Reveal eager className="container-site">
         <p className="eyebrow label-mono">{c.eyebrow}</p>
         <h1 className="mt-4">{c.title}</h1>
         <p className="mt-6 max-w-2xl">{c.intro}</p>
@@ -135,9 +135,9 @@ export function ServicesPage({ locale }: { locale: Locale }) {
                   {r.modifier === 0 ? c.basePrice : rightsLabel(r.modifier)}
                   {isDefault ? ` · ${c.isDefault}` : ""}
                 </p>
-                <h3 role="cell" className="mt-3">
-                  {locale === "vi" ? rightsVi[r.id].name : r.name}
-                </h3>
+                <div role="cell">
+                  <h3 className="mt-3">{locale === "vi" ? rightsVi[r.id].name : r.name}</h3>
+                </div>
                 <p role="cell" className="mt-3 text-small">
                   {locale === "vi" ? rightsVi[r.id].text : r.text}
                 </p>

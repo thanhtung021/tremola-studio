@@ -32,7 +32,7 @@ export function WorkListPage({
   );
   return (
     <div className="container-site pb-32 pt-40">
-      <Reveal>
+      <Reveal eager>
         <h1>{t.pages.work}</h1>
         <p className="mt-6 max-w-2xl">{t.work.intro}</p>
       </Reveal>
@@ -73,12 +73,12 @@ export function WorkListPage({
               <motion.li
                 key={w.slug}
                 layout={!reduce}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
+                // Fade-in runs in CSS (.reveal-fade) so the first cover paints before hydration.
+                initial={false}
                 transition={{ duration: reduce ? 0.2 : 0.6, ease }}
-                className={i === 0 ? "md:col-span-2" : undefined}
+                className={i === 0 ? "reveal-fade md:col-span-2" : "reveal-fade"}
               >
-                <WorkCard work={w} featured={i === 0} />
+                <WorkCard work={w} featured={i === 0} priority={i === 0} headingLevel={2} />
               </motion.li>
             ))}
           </motion.ul>

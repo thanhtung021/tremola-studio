@@ -39,7 +39,7 @@ export const Route = createFileRoute("/vi/work/$slug")({
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Không tìm thấy dự án</h1>
-      <Link to="/vi/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">
+      <Link to="/vi/work" className="link-draw mt-6 inline-block">
         Xem tất cả dự án
       </Link>
     </div>

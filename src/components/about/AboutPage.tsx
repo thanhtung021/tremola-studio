@@ -15,7 +15,7 @@ export function AboutPage({ locale }: { locale: Locale }) {
   const [focus, setFocus] = useState<LogoPart | null>(null);
   return (
     <div className="pt-40">
-      <Reveal className="container-site">
+      <Reveal eager className="container-site">
         <p className="eyebrow label-mono">{c.eyebrow}</p>
         <h1 className="mt-4 max-w-4xl text-balance break-words">{c.title}</h1>
       </Reveal>

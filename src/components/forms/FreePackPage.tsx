@@ -1,4 +1,5 @@
 import { instrumentImages } from "@/content/instrument-images";
+import { responsiveImage } from "@/lib/utils";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { Reveal } from "@/components/brand/Reveal";
 import { packCopy } from "@/content/forms";
@@ -11,7 +12,7 @@ export function FreePackPage({ locale }: { locale: Locale }) {
   const instruments = homeContent[locale].instruments;
   return (
     <div className="container-site pb-32 pt-40">
-      <Reveal>
+      <Reveal eager>
         <p className="eyebrow label-mono">
           Tremola Studio · {locale === "vi" ? "Gói miễn phí" : "Free pack"}
         </p>
@@ -23,7 +24,9 @@ export function FreePackPage({ locale }: { locale: Locale }) {
           <div key={i.name} className="card-tremola group overflow-hidden">
             <div className="relative aspect-[4/3] overflow-hidden bg-raised">
               <img
-                src={instrumentImages[i.name]}
+                src={instrumentImages[i.name]!}
+                {...responsiveImage(instrumentImages[i.name]!)}
+                sizes="(min-width: 640px) 50vw, 100vw"
                 alt={`Placeholder · ${i.name}`}
                 loading="lazy"
                 width={1024}

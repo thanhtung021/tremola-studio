@@ -39,7 +39,7 @@ export const Route = createFileRoute("/work/$slug")({
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Project not found</h1>
-      <Link to="/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">
+      <Link to="/work" className="link-draw mt-6 inline-block">
         See all work
       </Link>
     </div>

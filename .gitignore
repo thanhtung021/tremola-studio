@@ -40,3 +40,7 @@ media-source/*
 !media-source/README.md
 .wrangler/
 media-build/
+
+# Generated at build by scripts/generate-seo.ts
+public/robots.txt
+public/sitemap.xml

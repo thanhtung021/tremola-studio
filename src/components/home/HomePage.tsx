@@ -1,5 +1,6 @@
 import { ArrowRight } from "lucide-react";
 import { instrumentImages } from "@/content/instrument-images";
+import { responsiveImage } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
 import { motion, useReducedMotion } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
@@ -85,7 +86,7 @@ function Hero({ c, r }: P) {
         <div className="hero-glow absolute inset-0" />
         <div className="hero-ripple absolute inset-[35%]" />
       </div>
-      <Reveal className="relative flex flex-col items-center">
+      <Reveal eager className="relative flex flex-col items-center">
         <TremolaLogo size={96} animated="intro" />
         <p className="eyebrow label-mono mt-5">{c.hero.eyebrow}</p>
         <h1 className="mt-4 max-w-4xl text-balance break-words">
@@ -182,9 +183,7 @@ function SelectedWork({ c, r }: P) {
       <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
         <h2>{c.work.title}</h2>
         <Button asChild variant="ghostGold">
-          <Link to={r.work} search={{ line: "all" }}>
-            {c.work.all}
-          </Link>
+          <Link to={r.work}>{c.work.all}</Link>
         </Button>
       </div>
       <div className="grid gap-6 md:grid-cols-3">
@@ -210,7 +209,9 @@ function InstrumentCard({ inst }: { inst: HomeContent["instruments"][number] }) 
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-raised">
         <img
-          src={instrumentImages[inst.name]}
+          src={instrumentImages[inst.name]!}
+          {...responsiveImage(instrumentImages[inst.name]!)}
+          sizes="(min-width: 640px) 50vw, 100vw"
           alt={`Placeholder · ${inst.name}`}
           loading="lazy"
           width={1024}

@@ -116,7 +116,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             "https://www.youtube.com/@placeholder-tremola-studio",
             "https://www.instagram.com/placeholder-tremola-studio",
             "https://www.tiktok.com/@placeholder-tremola-studio",
-          ],
+          ].filter((u) => !u.includes("placeholder")),
         }),
       },
     ],
@@ -134,6 +134,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "theme-color", content: "#1f1a14" },
+      // Preview and development builds stay out of search engines.
+      ...(import.meta.env["VITE_APP_ENV"] === "production"
+        ? []
+        : [{ name: "robots", content: "noindex, nofollow" }]),
     ],
     links: [
       {
@@ -142,12 +146,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
-      { rel: "preconnect", href: "https://fonts.googleapis.com" },
-      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
-      {
-        rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=JetBrains+Mono:wght@400&display=swap&subset=vietnamese",
-      },
     ],
   }),
   shellComponent: RootShell,

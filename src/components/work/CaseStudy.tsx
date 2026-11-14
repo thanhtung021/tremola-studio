@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { CountUp } from "./CountUp";
 import { GoldText } from "@/components/brand/GoldText";
 import { toTrack } from "./toTrack";
+import { responsiveImage } from "@/lib/utils";
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
@@ -123,6 +124,9 @@ export function CaseStudy({ work: w }: { work: Work }) {
           ) : (
             <motion.img
               src={w.cover.src}
+              {...responsiveImage(w.cover.src)}
+              sizes="100vw"
+              fetchPriority="high"
               alt={w.cover.alt}
               width={1600}
               height={912}
