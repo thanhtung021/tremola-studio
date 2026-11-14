@@ -16,9 +16,15 @@ export const workFilters = [
 export type WorkFilter = (typeof workFilters)[number]["key"];
 
 export const normaliseFilter = (v: string): WorkFilter =>
-  (workFilters.find((f) => f.key === v)?.key ?? "all");
+  workFilters.find((f) => f.key === v)?.key ?? "all";
 
-export function WorkListPage({ line, setLine }: { line: WorkFilter; setLine: (l: WorkFilter) => void }) {
+export function WorkListPage({
+  line,
+  setLine,
+}: {
+  line: WorkFilter;
+  setLine: (l: WorkFilter) => void;
+}) {
   const reduce = useReducedMotion();
   const { t } = useLocale();
   const items = publishedWork.filter((w) =>
@@ -39,7 +45,9 @@ export function WorkListPage({ line, setLine }: { line: WorkFilter; setLine: (l:
             onClick={() => setLine(f.key)}
             className={cn(
               "cursor-pointer rounded-full border px-4 py-2 text-small transition-colors duration-250",
-              line === f.key ? "border-muted-foreground bg-raised text-body" : "border-hairline text-body hover:border-muted-foreground hover:text-body",
+              line === f.key
+                ? "border-muted-foreground bg-raised text-body"
+                : "border-hairline text-body hover:border-muted-foreground hover:text-body",
             )}
           >
             {t.work.filters[f.key]}
@@ -50,7 +58,11 @@ export function WorkListPage({ line, setLine }: { line: WorkFilter; setLine: (l:
       {items.length === 0 ? (
         <div className="card-tremola mt-12 p-10 text-center">
           <p className="text-ivory">{t.work.empty}</p>
-          <button type="button" onClick={() => setLine("all")} className="link-draw mt-4 cursor-pointer text-small">
+          <button
+            type="button"
+            onClick={() => setLine("all")}
+            className="link-draw mt-4 cursor-pointer text-small"
+          >
             {t.work.seeAll}
           </button>
         </div>

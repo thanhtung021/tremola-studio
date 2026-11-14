@@ -1,7 +1,15 @@
 import type { Dict } from "./en";
 
 export const vi: Dict = {
-  nav: { work: "Dự án", services: "Dịch vụ", asian: "Dấu ấn Á Đông", about: "Giới thiệu", audit: "Sound Audit miễn phí", menu: "Menu", close: "Đóng" },
+  nav: {
+    work: "Dự án",
+    services: "Dịch vụ",
+    asian: "Dấu ấn Á Đông",
+    about: "Giới thiệu",
+    audit: "Sound Audit miễn phí",
+    menu: "Menu",
+    close: "Đóng",
+  },
   footer: {
     descriptor: "Tremola Studio · Âm thanh cho game & ứng dụng",
     tagline: "Âm thanh có hồn riêng.",
@@ -22,8 +30,15 @@ export const vi: Dict = {
   work: {
     intro: "Hãy nghe trước. Mỗi dự án được xây như một hệ thống âm thanh thống nhất.",
     filterLabel: "Lọc dự án",
-    filters: { all: "Tất cả", game: "Game Audio", app: "Product & App Sound", media: "Media", asian: "Dấu ấn Á Đông" },
-    empty: "Dự án mới cho mục này đang được hoàn thiện. Trong lúc chờ, mời bạn nghe các bản concept.",
+    filters: {
+      all: "Tất cả",
+      game: "Game Audio",
+      app: "Product & App Sound",
+      media: "Media",
+      asian: "Dấu ấn Á Đông",
+    },
+    empty:
+      "Dự án mới cho mục này đang được hoàn thiện. Trong lúc chờ, mời bạn nghe các bản concept.",
     seeAll: "Xem tất cả dự án",
     challenge: "Bài toán",
     direction: "Định hướng âm thanh",
@@ -42,9 +57,12 @@ export const vi: Dict = {
   meta: {
     home: "Tremola Studio tạo cho game và ứng dụng một âm thanh của riêng mình: nhạc adaptive, SFX, UI sound và sonic branding, mang chất liệu Đông Nam Á.",
     work: "Nghe các dự án âm thanh của Tremola Studio: nhạc chủ đề, nhạc adaptive, UI sound kit và sonic logo.",
-    services: "Các gói Game Audio, Product & App Sound và Media của Tremola Studio. Báo giá theo gói, mặc định độc quyền.",
-    audit: "Gửi trailer hoặc bản quay ứng dụng. Tremola Studio gửi lại Sound Audit 60–90 giây miễn phí, làm lại âm thanh cho một khoảnh khắc.",
+    services:
+      "Các gói Game Audio, Product & App Sound và Media của Tremola Studio. Báo giá theo gói, mặc định độc quyền.",
+    audit:
+      "Gửi trailer hoặc bản quay ứng dụng. Tremola Studio gửi lại Sound Audit 60–90 giây miễn phí, làm lại âm thanh cho một khoảnh khắc.",
     freePack: "Tải miễn phí one-shot đàn tranh, đàn nguyệt, sáo trúc và T'rưng từ Tremola Studio.",
-    about: "Tremola Studio là studio âm thanh do nhà soạn nhạc dẫn dắt, đến từ Việt Nam. Câu chuyện tên gọi, logo và con người phía sau.",
+    about:
+      "Tremola Studio là studio âm thanh do nhà soạn nhạc dẫn dắt, đến từ Việt Nam. Câu chuyện tên gọi, logo và con người phía sau.",
   },
 };

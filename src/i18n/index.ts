@@ -28,7 +28,12 @@ export function useLocale() {
 }
 
 const pagePaths: Record<keyof Dict["pages"], string> = {
-  home: "/", work: "/work", services: "/services", audit: "/sound-audit", freePack: "/free-pack", about: "/about",
+  home: "/",
+  work: "/work",
+  services: "/services",
+  audit: "/sound-audit",
+  freePack: "/free-pack",
+  about: "/about",
 };
 
 type HeadCtx = { matches?: Array<{ loaderData?: unknown }> };
@@ -71,7 +76,10 @@ export function pageHead(locale: Locale, key: keyof Dict["pages"], ctx?: HeadCtx
             { property: "og:image", content: image },
             { property: "og:image:width", content: "1200" },
             { property: "og:image:height", content: "630" },
-            { property: "og:image:alt", content: "Tremola Studio logo with the tagline Sound with a soul of its own." },
+            {
+              property: "og:image:alt",
+              content: "Tremola Studio logo with the tagline Sound with a soul of its own.",
+            },
             { name: "twitter:image", content: image },
           ]
         : []),

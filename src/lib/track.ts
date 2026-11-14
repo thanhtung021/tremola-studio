@@ -11,7 +11,11 @@ export type TrackEvent =
   | "cta_click";
 
 const CONSENT_KEY = "tremola-consent";
-type W = Window & { gtag?: (...a: unknown[]) => void; dataLayer?: unknown[]; fbq?: ((...a: unknown[]) => void) & { queue?: unknown[] } };
+type W = Window & {
+  gtag?: (...a: unknown[]) => void;
+  dataLayer?: unknown[];
+  fbq?: ((...a: unknown[]) => void) & { queue?: unknown[] };
+};
 
 export const getConsent = (): "accepted" | "declined" | null => {
   if (typeof window === "undefined") return null;

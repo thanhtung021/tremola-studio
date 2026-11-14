@@ -30,7 +30,10 @@ export function Waveform({
     <div
       ref={ref}
       aria-hidden
-      className={cn("flex h-10 w-full min-w-0 cursor-pointer touch-none items-center justify-between gap-px overflow-hidden", className)}
+      className={cn(
+        "flex h-10 w-full min-w-0 cursor-pointer touch-none items-center justify-between gap-px overflow-hidden",
+        className,
+      )}
       onPointerDown={(e) => {
         if (!onSeek) return;
         (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
@@ -45,7 +48,9 @@ export function Waveform({
           key={i}
           className={cn(
             "w-[2px] min-w-px shrink rounded-full transition-colors duration-250",
-            playing && i / data.length < progress ? "waveform-played bg-gold" : "bg-muted-foreground",
+            playing && i / data.length < progress
+              ? "waveform-played bg-gold"
+              : "bg-muted-foreground",
           )}
           style={{ height: `${Math.max(8, p * 100)}%` }}
         />

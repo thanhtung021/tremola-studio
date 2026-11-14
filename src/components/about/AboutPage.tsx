@@ -25,7 +25,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <dl className="grid gap-10 md:grid-cols-3">
           {c.name.map((n) => (
             <div key={n.word} className="border-t border-hairline pt-6">
-              <dt className="font-display text-[56px] font-medium leading-none text-ivory">{n.word}</dt>
+              <dt className="font-display text-[56px] font-medium leading-none text-ivory">
+                {n.word}
+              </dt>
               <dd className="mt-4">{n.text}</dd>
             </div>
           ))}
@@ -33,7 +35,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <p className="mt-10 font-display text-[28px] italic text-ivory">{c.nameNote}</p>
       </Reveal>
 
-      <div className="container-site"><StringDivider /></div>
+      <div className="container-site">
+        <StringDivider />
+      </div>
 
       <Reveal as="section" className="section container-site grid-12 items-center">
         <div className="col-span-12 flex justify-center md:col-span-5">
@@ -55,7 +59,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
                   aria-pressed={focus === l.part}
                   className={cn(
                     "w-full cursor-pointer border-l-2 py-3 pl-5 text-left text-body transition-colors duration-250",
-                    focus === l.part ? "border-gold text-ivory" : "border-hairline hover:text-ivory",
+                    focus === l.part
+                      ? "border-gold text-ivory"
+                      : "border-hairline hover:text-ivory",
                   )}
                 >
                   {l.text}
@@ -67,16 +73,26 @@ export function AboutPage({ locale }: { locale: Locale }) {
       </Reveal>
 
       <Reveal as="section" className="section container-site">
-        <p className="mx-auto max-w-4xl font-display text-[28px] font-medium leading-snug tracking-[-0.01em] text-ivory">{c.story}</p>
+        <p className="mx-auto max-w-4xl font-display text-[28px] font-medium leading-snug tracking-[-0.01em] text-ivory">
+          {c.story}
+        </p>
       </Reveal>
 
-      <div className="container-site"><StringDivider /></div>
+      <div className="container-site">
+        <StringDivider />
+      </div>
 
       <Reveal as="section" className="section container-site grid-12 items-center">
         <div className="col-span-12 md:col-span-4">
-          <div role="img" aria-label={c.founder.portraitAlt} className="relative grid aspect-[4/5] place-items-center rounded-card border border-hairline bg-raised">
+          <div
+            role="img"
+            aria-label={c.founder.portraitAlt}
+            className="relative grid aspect-[4/5] place-items-center rounded-card border border-hairline bg-raised"
+          >
             <TremolaLogo size={64} className="opacity-40" />
-            <span className="label-mono absolute left-4 top-4 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">Placeholder</span>
+            <span className="label-mono absolute left-4 top-4 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">
+              Placeholder
+            </span>
           </div>
         </div>
         <div className="col-span-12 mt-10 md:col-span-7 md:col-start-6 md:mt-0">
@@ -93,7 +109,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <h2 className="mb-8 text-[28px]">{c.notTitle}</h2>
         <ul className="flex flex-wrap gap-3">
           {c.not.map((n) => (
-            <li key={n} className="rounded-full border border-hairline px-4 py-2 text-small">{n}</li>
+            <li key={n} className="rounded-full border border-hairline px-4 py-2 text-small">
+              {n}
+            </li>
           ))}
         </ul>
       </Reveal>
@@ -101,7 +119,9 @@ export function AboutPage({ locale }: { locale: Locale }) {
       <section className="border-y border-hairline bg-surface">
         <div className="container-site flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
           <p className="font-display text-[32px] leading-tight text-ivory">{c.ctaTitle}</p>
-          <Button asChild size="lg"><Link to={r.audit}>{c.cta}</Link></Button>
+          <Button asChild size="lg">
+            <Link to={r.audit}>{c.cta}</Link>
+          </Button>
         </div>
       </section>
     </div>

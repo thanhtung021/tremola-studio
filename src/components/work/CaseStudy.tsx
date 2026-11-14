@@ -6,7 +6,15 @@ import { BeforeAfterPlayer } from "@/components/audio/BeforeAfterPlayer";
 import { Reveal } from "@/components/brand/Reveal";
 import { StringDivider } from "@/components/brand/StringDivider";
 import { Button } from "@/components/ui/button";
-import { kindBadge, lineLabels, localizeWork, publishedWork, vietnameseInstruments, type Work, type WorkTrack } from "@/data/work";
+import {
+  kindBadge,
+  lineLabels,
+  localizeWork,
+  publishedWork,
+  vietnameseInstruments,
+  type Work,
+  type WorkTrack,
+} from "@/data/work";
 import { useLocale } from "@/i18n";
 import { cn } from "@/lib/utils";
 import { CountUp } from "./CountUp";
@@ -22,14 +30,28 @@ function Section({ title, children }: { title: string; children: React.ReactNode
   );
 }
 
-function TrackList({ slug, tracks, offset }: { slug: string; tracks: WorkTrack[]; offset: number }) {
+function TrackList({
+  slug,
+  tracks,
+  offset,
+}: {
+  slug: string;
+  tracks: WorkTrack[];
+  offset: number;
+}) {
   const { current, playing } = useAudio();
   return (
     <ul className="space-y-4">
       {tracks.map((t, i) => {
         const tr = toTrack(slug, t, offset + i);
         return (
-          <li key={tr.id} className={cn("border-l-2 pl-4 transition-colors", current?.id === tr.id && playing ? "border-gold" : "border-transparent")}>
+          <li
+            key={tr.id}
+            className={cn(
+              "border-l-2 pl-4 transition-colors",
+              current?.id === tr.id && playing ? "border-gold" : "border-transparent",
+            )}
+          >
             <AudioPlayer track={tr} compact />
           </li>
         );
@@ -71,17 +93,33 @@ export function CaseStudy({ work: w }: { work: Work }) {
         </p>
         <h1 className="mt-4 max-w-5xl">{w.title}</h1>
         <div className="mt-6 flex flex-wrap items-center gap-4 text-small">
-          {w.client ? <span className="text-ivory">{w.client}</span> : badge && (
-            <span className="label-mono rounded-full border border-hairline-strong px-3 py-1 text-ivory">{badge}</span>
+          {w.client ? (
+            <span className="text-ivory">{w.client}</span>
+          ) : (
+            badge && (
+              <span className="label-mono rounded-full border border-hairline-strong px-3 py-1 text-ivory">
+                {badge}
+              </span>
+            )
           )}
           <span className="text-muted-foreground">{w.role}</span>
         </div>
         <div className="relative mt-12 overflow-hidden rounded-card border border-hairline">
           {w.cover.alt.startsWith("Placeholder") && (
-            <span className="label-mono absolute left-4 top-4 z-10 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">Placeholder</span>
+            <span className="label-mono absolute left-4 top-4 z-10 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">
+              Placeholder
+            </span>
           )}
           {w.cover.type === "video" ? (
-            <video src={w.cover.src} muted loop playsInline preload="none" aria-label={w.cover.alt} className="aspect-[21/9] w-full object-cover" />
+            <video
+              src={w.cover.src}
+              muted
+              loop
+              playsInline
+              preload="none"
+              aria-label={w.cover.alt}
+              className="aspect-[21/9] w-full object-cover"
+            />
           ) : (
             <motion.img
               src={w.cover.src}
@@ -105,18 +143,29 @@ export function CaseStudy({ work: w }: { work: Work }) {
       <div className="container-site">
         {w.summary && (
           <Reveal className="py-20">
-            <p className="max-w-4xl font-display text-[28px] font-medium leading-snug tracking-[-0.01em] text-ivory">{w.summary}</p>
+            <p className="max-w-4xl font-display text-[28px] font-medium leading-snug tracking-[-0.01em] text-ivory">
+              {w.summary}
+            </p>
           </Reveal>
         )}
         <StringDivider />
-        {w.challenge && <Section title={c.challenge}><p>{w.challenge}</p></Section>}
+        {w.challenge && (
+          <Section title={c.challenge}>
+            <p>{w.challenge}</p>
+          </Section>
+        )}
         {(w.direction || instruments.length > 0) && (
           <Section title={c.direction}>
             {w.direction && <p>{w.direction}</p>}
             {instruments.length > 0 && (
               <ul className="mt-6 flex flex-wrap gap-2" aria-label={c.instruments}>
                 {instruments.map((i) => (
-                  <li key={i} className="rounded-full border border-hairline-strong px-3 py-1 text-small text-ivory">{i}</li>
+                  <li
+                    key={i}
+                    className="rounded-full border border-hairline-strong px-3 py-1 text-small text-ivory"
+                  >
+                    {i}
+                  </li>
                 ))}
               </ul>
             )}
@@ -125,7 +174,12 @@ export function CaseStudy({ work: w }: { work: Work }) {
         {w.beforeAfter && (
           <Reveal as="section" className="py-16">
             <h2 className="mb-8 text-[28px]">Before / After</h2>
-            <BeforeAfterPlayer placeholder video={w.beforeAfter.video} before={w.beforeAfter.beforeAudio} after={w.beforeAfter.afterAudio} />
+            <BeforeAfterPlayer
+              placeholder
+              video={w.beforeAfter.video}
+              before={w.beforeAfter.beforeAudio}
+              after={w.beforeAfter.afterAudio}
+            />
           </Reveal>
         )}
         {cols.length > 0 && (
@@ -152,7 +206,11 @@ export function CaseStudy({ work: w }: { work: Work }) {
             <dl className="grid gap-10 sm:grid-cols-3">
               {w.results.map((r) => (
                 <div key={r.label}>
-                  <dd className="font-display text-[64px] font-medium leading-none text-ivory"><GoldText><CountUp value={r.value} /></GoldText></dd>
+                  <dd className="font-display text-[64px] font-medium leading-none text-ivory">
+                    <GoldText>
+                      <CountUp value={r.value} />
+                    </GoldText>
+                  </dd>
                   <dt className="label-mono mt-3 text-muted-foreground">{r.label}</dt>
                 </div>
               ))}
@@ -161,19 +219,30 @@ export function CaseStudy({ work: w }: { work: Work }) {
         ) : null}
         {w.credits?.length ? (
           <Section title={c.credits}>
-            <ul className="space-y-1 text-small">{w.credits.map((c) => <li key={c}>{c}</li>)}</ul>
+            <ul className="space-y-1 text-small">
+              {w.credits.map((c) => (
+                <li key={c}>{c}</li>
+              ))}
+            </ul>
           </Section>
         ) : null}
 
         {publishedWork.length > 1 && prev && next && (
-          <nav aria-label={c.more} className="grid gap-6 border-t border-hairline py-12 sm:grid-cols-2">
+          <nav
+            aria-label={c.more}
+            className="grid gap-6 border-t border-hairline py-12 sm:grid-cols-2"
+          >
             <Link to={workRoute} params={{ slug: prev.slug }} className="group">
               <span className="label-mono text-muted-foreground">{c.prev}</span>
-              <span className="mt-2 block font-display text-[28px] text-ivory group-hover:text-gold">{prev.title}</span>
+              <span className="mt-2 block font-display text-[28px] text-ivory group-hover:text-gold">
+                {prev.title}
+              </span>
             </Link>
             <Link to={workRoute} params={{ slug: next.slug }} className="group sm:text-right">
               <span className="label-mono text-muted-foreground">{c.next}</span>
-              <span className="mt-2 block font-display text-[28px] text-ivory group-hover:text-gold">{next.title}</span>
+              <span className="mt-2 block font-display text-[28px] text-ivory group-hover:text-gold">
+                {next.title}
+              </span>
             </Link>
           </nav>
         )}
@@ -182,7 +251,9 @@ export function CaseStudy({ work: w }: { work: Work }) {
       <section className="border-y border-hairline bg-surface">
         <div className="container-site flex flex-col items-start gap-6 py-16 md:flex-row md:items-center md:justify-between">
           <p className="font-display text-[32px] leading-tight text-ivory">{c.cta}</p>
-          <Button asChild size="lg"><Link to={auditRoute}>{c.audit}</Link></Button>
+          <Button asChild size="lg">
+            <Link to={auditRoute}>{c.audit}</Link>
+          </Button>
         </div>
       </section>
     </article>

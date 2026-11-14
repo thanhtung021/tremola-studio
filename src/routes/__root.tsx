@@ -84,7 +84,9 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: async () => ({ origin: typeof window !== "undefined" ? window.location.origin : await getRequestOrigin() }),
+  loader: async () => ({
+    origin: typeof window !== "undefined" ? window.location.origin : await getRequestOrigin(),
+  }),
   staleTime: Infinity,
   head: ({ loaderData }) => ({
     scripts: [
@@ -168,7 +170,10 @@ function RootComponent() {
       const a = (e.target as HTMLElement | null)?.closest?.("a");
       const href = a?.getAttribute("href") ?? "";
       if (/\/(sound-audit|free-pack)$/.test(href)) {
-        track("cta_click", { label: (a?.textContent ?? "").trim().slice(0, 80), page: window.location.pathname });
+        track("cta_click", {
+          label: (a?.textContent ?? "").trim().slice(0, 80),
+          page: window.location.pathname,
+        });
       }
     };
     document.addEventListener("click", onClick);
@@ -179,7 +184,10 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <AudioProvider>
-        <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-gold focus:px-4 focus:py-2 focus:text-primary-foreground">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-gold focus:px-4 focus:py-2 focus:text-primary-foreground"
+        >
           Skip to content
         </a>
         <Navbar />

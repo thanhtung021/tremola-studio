@@ -78,7 +78,8 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
     const v = vRef.current!;
     const onTime = () => {
       setTime(v.currentTime);
-      for (const t of tracks()) if (t && Math.abs(t.currentTime - v.currentTime) > 0.15) t.currentTime = v.currentTime;
+      for (const t of tracks())
+        if (t && Math.abs(t.currentTime - v.currentTime) > 0.15) t.currentTime = v.currentTime;
     };
     const onMeta = () => setDuration(v.duration);
     const onEnd = () => pauseAll();
@@ -104,18 +105,37 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
     <div
       data-audio-playing={playing}
       tabIndex={0}
-      aria-label={vi ? "So sánh âm thanh trước và sau. Nhấn B để chuyển." : "Before and after sound comparison. Press B to switch."}
-      className={cn("card-tremola overflow-hidden outline-none focus-visible:border-gold", className)}
+      aria-label={
+        vi
+          ? "So sánh âm thanh trước và sau. Nhấn B để chuyển."
+          : "Before and after sound comparison. Press B to switch."
+      }
+      className={cn(
+        "card-tremola overflow-hidden outline-none focus-visible:border-gold",
+        className,
+      )}
       onKeyDown={(e) => {
         if (e.target !== e.currentTarget && (e.key === " " || e.key === "Enter")) return;
-        if (e.key.toLowerCase() === "b") { e.preventDefault(); toggleMode(); }
-        else if (e.key === " " || e.key === "Enter") { e.preventDefault(); void togglePlay(); }
-        else if (e.key === "ArrowRight") seekTo(time + 5);
+        if (e.key.toLowerCase() === "b") {
+          e.preventDefault();
+          toggleMode();
+        } else if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          void togglePlay();
+        } else if (e.key === "ArrowRight") seekTo(time + 5);
         else if (e.key === "ArrowLeft") seekTo(time - 5);
       }}
     >
       <div className="relative aspect-video bg-raised">
-        <video ref={vRef} src={video} poster={poster} muted playsInline preload="none" className="size-full object-cover" />
+        <video
+          ref={vRef}
+          src={video}
+          poster={poster}
+          muted
+          playsInline
+          preload="none"
+          className="size-full object-cover"
+        />
         <audio ref={bRef} src={before} preload="none" />
         <audio ref={aRef} src={after} preload="none" />
         {placeholder && (
@@ -141,12 +161,27 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
           type="button"
           onClick={() => void togglePlay()}
           aria-label={playing ? "Pause" : "Play"}
-          className={cn("grid size-9 cursor-pointer place-items-center rounded-full border", playing ? "border-gold bg-gold text-primary-foreground" : "border-muted-foreground text-muted-foreground")}
+          className={cn(
+            "grid size-9 cursor-pointer place-items-center rounded-full border",
+            playing
+              ? "border-gold bg-gold text-primary-foreground"
+              : "border-muted-foreground text-muted-foreground",
+          )}
         >
-          {playing ? <Pause className="size-3.5" fill="currentColor" /> : <Play className="size-3.5 translate-x-px" fill="currentColor" />}
+          {playing ? (
+            <Pause className="size-3.5" fill="currentColor" />
+          ) : (
+            <Play className="size-3.5 translate-x-px" fill="currentColor" />
+          )}
         </button>
-        <span className="label-mono text-muted-foreground">{fmtTime(time)} / {fmtTime(duration)}</span>
-        <div role="radiogroup" aria-label={vi ? "Phiên bản âm thanh" : "Sound version"} className="ml-auto flex rounded-full border border-hairline p-1">
+        <span className="label-mono text-muted-foreground">
+          {fmtTime(time)} / {fmtTime(duration)}
+        </span>
+        <div
+          role="radiogroup"
+          aria-label={vi ? "Phiên bản âm thanh" : "Sound version"}
+          className="ml-auto flex rounded-full border border-hairline p-1"
+        >
           {(["before", "after"] as const).map((m) => (
             <button
               key={m}
@@ -159,7 +194,13 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
                 mode === m ? "bg-raised text-body" : "text-muted-foreground hover:text-ivory",
               )}
             >
-              {m === "before" ? (vi ? "Trước" : "Before") : vi ? "Sau · Tremola Studio" : "After · Tremola Studio"}
+              {m === "before"
+                ? vi
+                  ? "Trước"
+                  : "Before"
+                : vi
+                  ? "Sau · Tremola Studio"
+                  : "After · Tremola Studio"}
             </button>
           ))}
         </div>

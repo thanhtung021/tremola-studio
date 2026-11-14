@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+} from "react";
 import { track as trackEvent } from "@/lib/track";
 import type { Track } from "./types";
 
@@ -116,7 +124,9 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   return (
-    <AudioCtx.Provider value={{ current, playing, time, duration, peaks, toggle, pause, close, seek, claim }}>
+    <AudioCtx.Provider
+      value={{ current, playing, time, duration, peaks, toggle, pause, close, seek, claim }}
+    >
       {children}
     </AudioCtx.Provider>
   );

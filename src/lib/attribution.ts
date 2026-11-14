@@ -25,7 +25,14 @@ export function captureAttribution() {
 }
 
 export function getAttribution(): Attribution {
-  const empty: Attribution = { utm_source: null, utm_medium: null, utm_campaign: null, utm_content: null, referrer: null, landing_page: null };
+  const empty: Attribution = {
+    utm_source: null,
+    utm_medium: null,
+    utm_campaign: null,
+    utm_content: null,
+    referrer: null,
+    landing_page: null,
+  };
   if (typeof window === "undefined") return empty;
   try {
     return { ...empty, ...JSON.parse(sessionStorage.getItem(KEY) ?? "{}") };

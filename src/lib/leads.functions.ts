@@ -11,7 +11,8 @@ function publicClient() {
     global: {
       fetch: (input, init) => {
         const h = new Headers(init?.headers);
-        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
+        if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`)
+          h.delete("Authorization");
         h.set("apikey", key);
         return fetch(input, { ...init, headers: h });
       },
@@ -30,28 +31,30 @@ export const submitContactMessage = createServerFn({ method: "POST" })
 export const submitAuditRequest = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => auditSchema.parse(input))
   .handler(async ({ data }) => {
-    const { error } = await publicClient().from("audit_requests").insert({
-      locale: data.locale,
-      name: data.name,
-      email: data.email,
-      company: data.company,
-      role: data.role,
-      listen_to: data.listenTo,
-      link: data.link,
-      team_size: data.teamSize,
-      launch: data.launch,
-      budget: data.budget,
-      pain: data.pain || null,
-      heard_from: data.heardFrom || null,
-      app_status: data.appStatus || null,
-      qualified: isQualified(data.launch, data.budget),
-      utm_source: data.utm_source,
-      utm_medium: data.utm_medium,
-      utm_campaign: data.utm_campaign,
-      utm_content: data.utm_content,
-      referrer: data.referrer,
-      landing_page: data.landing_page,
-    });
+    const { error } = await publicClient()
+      .from("audit_requests")
+      .insert({
+        locale: data.locale,
+        name: data.name,
+        email: data.email,
+        company: data.company,
+        role: data.role,
+        listen_to: data.listenTo,
+        link: data.link,
+        team_size: data.teamSize,
+        launch: data.launch,
+        budget: data.budget,
+        pain: data.pain || null,
+        heard_from: data.heardFrom || null,
+        app_status: data.appStatus || null,
+        qualified: isQualified(data.launch, data.budget),
+        utm_source: data.utm_source,
+        utm_medium: data.utm_medium,
+        utm_campaign: data.utm_campaign,
+        utm_content: data.utm_content,
+        referrer: data.referrer,
+        landing_page: data.landing_page,
+      });
     if (error) {
       console.error("audit insert failed", error.message);
       throw new Error("Could not save your request");

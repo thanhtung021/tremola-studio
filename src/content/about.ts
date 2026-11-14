@@ -30,7 +30,12 @@ const en = {
     bio: "[Degree, school], [2–3 lines about background and approach]",
   },
   notTitle: "What we are not",
-  not: ["Not a sound-effects factory", "Not a stock library", "Not a one-color \u201Cethnic music\u201D studio", "Not a jingle agency"],
+  not: [
+    "Not a sound-effects factory",
+    "Not a stock library",
+    "Not a one-color \u201Cethnic music\u201D studio",
+    "Not a jingle agency",
+  ],
   ctaTitle: "Hear what your product could sound like.",
   cta: "Get a free Sound Audit",
 };
@@ -63,7 +68,12 @@ const vi: AboutContent = {
     bio: "[Bằng cấp, trường], [2–3 dòng về xuất thân và cách làm việc]",
   },
   notTitle: "Chúng tôi không phải",
-  not: ["Không phải xưởng sản xuất hiệu ứng âm thanh hàng loạt", "Không phải thư viện âm thanh có sẵn", "Không phải studio \u201Cnhạc dân tộc\u201D một màu", "Không phải agency làm jingle"],
+  not: [
+    "Không phải xưởng sản xuất hiệu ứng âm thanh hàng loạt",
+    "Không phải thư viện âm thanh có sẵn",
+    "Không phải studio \u201Cnhạc dân tộc\u201D một màu",
+    "Không phải agency làm jingle",
+  ],
   ctaTitle: "Nghe thử sản phẩm của bạn có thể mang âm thanh như thế nào.",
   cta: "Nhận Sound Audit miễn phí",
 };

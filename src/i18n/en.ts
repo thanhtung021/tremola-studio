@@ -1,5 +1,13 @@
 export const en = {
-  nav: { work: "Work", services: "Services", asian: "Asian Signature", about: "About", audit: "Free Sound Audit", menu: "Menu", close: "Close" },
+  nav: {
+    work: "Work",
+    services: "Services",
+    asian: "Asian Signature",
+    about: "About",
+    audit: "Free Sound Audit",
+    menu: "Menu",
+    close: "Close",
+  },
   footer: {
     descriptor: "Tremola Studio · Sound for games & apps",
     tagline: "Sound with a soul of its own.",
@@ -20,7 +28,13 @@ export const en = {
   work: {
     intro: "Listen first. Every project is built as one sonic system.",
     filterLabel: "Filter work",
-    filters: { all: "All", game: "Game Audio", app: "Product & App Sound", media: "Media", asian: "Asian Signature" },
+    filters: {
+      all: "All",
+      game: "Game Audio",
+      app: "Product & App Sound",
+      media: "Media",
+      asian: "Asian Signature",
+    },
     empty: "New work in this category is on the way. Hear our concepts meanwhile.",
     seeAll: "See all work",
     challenge: "The challenge",
@@ -40,10 +54,14 @@ export const en = {
   meta: {
     home: "Tremola Studio gives games and apps a sound of their own: adaptive music, SFX, UI sound and sonic branding, rooted in Southeast Asian craft.",
     work: "Listen to game and app sound by Tremola Studio: main themes, adaptive music, UI sound kits and sonic logos.",
-    services: "Game Audio, Product & App Sound and Media packages from Tremola Studio. Priced by package, exclusive by default.",
-    audit: "Send your trailer or app recording. Tremola Studio sends back a free 60–90 second Sound Audit with one moment re-scored.",
-    freePack: "Download free one-shots of đàn tranh, đàn nguyệt, sáo trúc and T'rưng from Tremola Studio.",
-    about: "Tremola Studio is a composer-led sound studio from Vietnam. The name, the logo and the people behind the sound.",
+    services:
+      "Game Audio, Product & App Sound and Media packages from Tremola Studio. Priced by package, exclusive by default.",
+    audit:
+      "Send your trailer or app recording. Tremola Studio sends back a free 60–90 second Sound Audit with one moment re-scored.",
+    freePack:
+      "Download free one-shots of đàn tranh, đàn nguyệt, sáo trúc and T'rưng from Tremola Studio.",
+    about:
+      "Tremola Studio is a composer-led sound studio from Vietnam. The name, the logo and the people behind the sound.",
   },
 };
 export type Dict = typeof en;

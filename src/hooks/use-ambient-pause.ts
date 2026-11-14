@@ -11,10 +11,16 @@ export function useAmbientPause<T extends HTMLElement>() {
       if (visible && !document.hidden) el.removeAttribute("data-ambient-paused");
       else el.setAttribute("data-ambient-paused", "");
     };
-    const io = new IntersectionObserver(([e]) => { visible = !!e?.isIntersecting; apply(); });
+    const io = new IntersectionObserver(([e]) => {
+      visible = !!e?.isIntersecting;
+      apply();
+    });
     io.observe(el);
     document.addEventListener("visibilitychange", apply);
-    return () => { io.disconnect(); document.removeEventListener("visibilitychange", apply); };
+    return () => {
+      io.disconnect();
+      document.removeEventListener("visibilitychange", apply);
+    };
   }, []);
   return ref;
 }

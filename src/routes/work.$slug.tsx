@@ -12,7 +12,9 @@ export const Route = createFileRoute("/work/$slug")({
   },
   head: ({ loaderData, matches }) => {
     const origin = originFrom({ matches });
-    const title = loaderData ? `${loaderData.title} · Tremola Studio` : "Project not found · Tremola Studio";
+    const title = loaderData
+      ? `${loaderData.title} · Tremola Studio`
+      : "Project not found · Tremola Studio";
     const description = loaderData?.summary ?? "This project could not be found.";
     return {
       meta: [
@@ -23,7 +25,10 @@ export const Route = createFileRoute("/work/$slug")({
         { property: "og:type", content: "article" },
         { name: "twitter:card", content: "summary_large_image" },
         ...(loaderData && origin
-          ? [{ property: "og:image", content: `${origin}/og-image.png` }, { name: "twitter:image", content: `${origin}/og-image.png` }]
+          ? [
+              { property: "og:image", content: `${origin}/og-image.png` },
+              { name: "twitter:image", content: `${origin}/og-image.png` },
+            ]
           : []),
         ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
       ],
@@ -34,11 +39,15 @@ export const Route = createFileRoute("/work/$slug")({
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Project not found</h1>
-      <Link to="/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">See all work</Link>
+      <Link to="/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">
+        See all work
+      </Link>
     </div>
   ),
   errorComponent: () => (
-    <div className="container-site pb-32 pt-40"><h1>This project didn't load</h1></div>
+    <div className="container-site pb-32 pt-40">
+      <h1>This project didn't load</h1>
+    </div>
   ),
 });
 

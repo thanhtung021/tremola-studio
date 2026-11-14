@@ -12,7 +12,9 @@ export const Route = createFileRoute("/vi/work/$slug")({
   },
   head: ({ loaderData, matches }) => {
     const origin = originFrom({ matches });
-    const title = loaderData ? `${loaderData.title} · Tremola Studio` : "Không tìm thấy dự án · Tremola Studio";
+    const title = loaderData
+      ? `${loaderData.title} · Tremola Studio`
+      : "Không tìm thấy dự án · Tremola Studio";
     const description = loaderData?.summary ?? "Không tìm thấy dự án này.";
     return {
       meta: [
@@ -23,7 +25,10 @@ export const Route = createFileRoute("/vi/work/$slug")({
         { property: "og:type", content: "article" },
         { name: "twitter:card", content: "summary_large_image" },
         ...(loaderData && origin
-          ? [{ property: "og:image", content: `${origin}/og-image.png` }, { name: "twitter:image", content: `${origin}/og-image.png` }]
+          ? [
+              { property: "og:image", content: `${origin}/og-image.png` },
+              { name: "twitter:image", content: `${origin}/og-image.png` },
+            ]
           : []),
         ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
       ],
@@ -34,11 +39,15 @@ export const Route = createFileRoute("/vi/work/$slug")({
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Không tìm thấy dự án</h1>
-      <Link to="/vi/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">Xem tất cả dự án</Link>
+      <Link to="/vi/work" search={{ line: "all" }} className="link-draw mt-6 inline-block">
+        Xem tất cả dự án
+      </Link>
     </div>
   ),
   errorComponent: () => (
-    <div className="container-site pb-32 pt-40"><h1>Không tải được dự án này</h1></div>
+    <div className="container-site pb-32 pt-40">
+      <h1>Không tải được dự án này</h1>
+    </div>
   ),
 });
 

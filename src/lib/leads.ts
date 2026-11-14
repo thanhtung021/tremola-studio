@@ -38,9 +38,17 @@ export const auditSchema = z.object({
   company: z.string().trim().min(1, "company").max(160, "company"),
   role: oneOf(auditOptions.role, "role"),
   listenTo: oneOf(auditOptions.listenTo, "listenTo"),
-  link: z.string().trim().url("link").max(500, "link").refine((v) => /^https?:\/\//i.test(v), "link"),
+  link: z
+    .string()
+    .trim()
+    .url("link")
+    .max(500, "link")
+    .refine((v) => /^https?:\/\//i.test(v), "link"),
   teamSize: oneOf(auditOptions.teamSize, "teamSize"),
-  launch: z.string().regex(/^\d{4}-\d{2}$/, "launch").nullable(),
+  launch: z
+    .string()
+    .regex(/^\d{4}-\d{2}$/, "launch")
+    .nullable(),
   budget: oneOf([...auditOptions.budgetEn, ...auditOptions.budgetVi], "budget"),
   pain: z.string().trim().max(2000, "pain").optional(),
   heardFrom: z.union([oneOf(auditOptions.heardFrom, "heardFrom"), z.literal("")]).optional(),

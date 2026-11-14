@@ -21,7 +21,13 @@ const segs = [
   { y: 37.8, h: 10.2 },
 ];
 
-export function TremolaLogo({ size = 40, withTile = false, animated = "none", className, pluckSignal }: Props) {
+export function TremolaLogo({
+  size = 40,
+  withTile = false,
+  animated = "none",
+  className,
+  pluckSignal,
+}: Props) {
   const maskId = `tremola-mask-${useId().replace(/:/g, "")}`;
   const reduce = useReducedMotion();
   const pluck = useAnimationControls();

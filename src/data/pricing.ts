@@ -50,12 +50,37 @@ const packages = (l: "en" | "vi", p: Record<Key, Price>): Package[] => {
   return [
     { id: "basic", line: "game", name: "Basic Pack", includes: inc.basic, ...p.basic },
     { id: "indie", line: "game", name: "Indie Full Score", includes: inc.indie, ...p.indie },
-    { id: "premium", line: "game", name: "Premium Score Pack", includes: inc.premium, ...p.premium },
+    {
+      id: "premium",
+      line: "game",
+      name: "Premium Score Pack",
+      includes: inc.premium,
+      ...p.premium,
+    },
     { id: "ui-kit", line: "app", name: "UI Sound Kit Pro", includes: inc.uiKit, ...p.uiKit },
-    { id: "sonic-identity", line: "app", name: "Sonic Identity", includes: inc.sonicId, ...p.sonicId },
+    {
+      id: "sonic-identity",
+      line: "app",
+      name: "Sonic Identity",
+      includes: inc.sonicId,
+      ...p.sonicId,
+    },
     { id: "brand-suite", line: "app", name: "Brand Sound Suite", includes: inc.suite, ...p.suite },
-    { id: "stinger", line: "media", name: "Sonic Identity & Stinger", includes: inc.stinger, ...p.stinger },
-    { id: "live-recording", line: "addon", name: "Live Asian Recording", includes: inc.live, note: liveNote[l], ...p.live },
+    {
+      id: "stinger",
+      line: "media",
+      name: "Sonic Identity & Stinger",
+      includes: inc.stinger,
+      ...p.stinger,
+    },
+    {
+      id: "live-recording",
+      line: "addon",
+      name: "Live Asian Recording",
+      includes: inc.live,
+      note: liveNote[l],
+      ...p.live,
+    },
   ];
 };
 
@@ -90,15 +115,32 @@ export const pricing: Record<"en" | "vi", { currency: Currency; packages: Packag
 
 /** Rights options, as a change to the base (exclusive) price. */
 export const rights = [
-  { id: "non-exclusive", name: "Non-exclusive", modifier: -0.2, text: "Tremola Studio keeps the rights and may license the sounds again." },
-  { id: "exclusive", name: "Exclusive", modifier: 0, text: "Yours to use exclusively, forever, in your product.", isDefault: true },
+  {
+    id: "non-exclusive",
+    name: "Non-exclusive",
+    modifier: -0.2,
+    text: "Tremola Studio keeps the rights and may license the sounds again.",
+  },
+  {
+    id: "exclusive",
+    name: "Exclusive",
+    modifier: 0,
+    text: "Yours to use exclusively, forever, in your product.",
+    isDefault: true,
+  },
   { id: "buyout", name: "Full buyout", modifier: 0.5, text: "All rights transferred to you." },
 ] as const;
 
 /** Vietnamese names and text for the rights options, keyed by id. */
 export const rightsVi: Record<(typeof rights)[number]["id"], { name: string; text: string }> = {
-  "non-exclusive": { name: "Không độc quyền", text: "Tremola Studio giữ quyền và có thể cấp phép lại các âm thanh này." },
-  exclusive: { name: "Độc quyền", text: "Bạn được dùng độc quyền, vĩnh viễn, trong sản phẩm của mình." },
+  "non-exclusive": {
+    name: "Không độc quyền",
+    text: "Tremola Studio giữ quyền và có thể cấp phép lại các âm thanh này.",
+  },
+  exclusive: {
+    name: "Độc quyền",
+    text: "Bạn được dùng độc quyền, vĩnh viễn, trong sản phẩm của mình.",
+  },
   buyout: { name: "Mua đứt", text: "Toàn bộ quyền được chuyển giao cho bạn." },
 };
 
@@ -109,11 +151,13 @@ export function formatPrice(amount: number, currency: Currency) {
 
 export function formatListed(p: Package, currency: Currency) {
   if (p.listed === null) return currency === "VND" ? "Liên hệ" : "Contact us";
-  if (Array.isArray(p.listed)) return `${formatPrice(p.listed[0], currency)}–${formatPrice(p.listed[1], currency)}`;
+  if (Array.isArray(p.listed))
+    return `${formatPrice(p.listed[0], currency)}–${formatPrice(p.listed[1], currency)}`;
   return formatPrice(p.listed, currency);
 }
 
 /** Founding price shows only while slots remain and the item has one. */
 export const showFounding = (p: Package, remaining: number) => remaining > 0 && p.founding !== null;
 
-export const rightsLabel = (m: number) => (m === 0 ? "Base price" : `${m > 0 ? "+" : "−"}${Math.abs(m * 100)}%`);
+export const rightsLabel = (m: number) =>
+  m === 0 ? "Base price" : `${m > 0 ? "+" : "−"}${Math.abs(m * 100)}%`;

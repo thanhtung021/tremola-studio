@@ -15,10 +15,19 @@ export function SoundAuditPage({ locale }: { locale: Locale }) {
           <p className="mt-6">{c.intro}</p>
           <div className="mt-10">
             <p className="label-mono mb-3 text-muted-foreground">{c.sample}</p>
-            <BeforeAfterPlayer placeholder video={placeholderMedia.video} before={placeholderMedia.before} after={placeholderMedia.after} />
+            <BeforeAfterPlayer
+              placeholder
+              video={placeholderMedia.video}
+              before={placeholderMedia.before}
+              after={placeholderMedia.after}
+            />
           </div>
           <ul className="mt-8 space-y-2">
-            {c.facts.map((f) => <li key={f} className="label-mono text-muted-foreground">· {f}</li>)}
+            {c.facts.map((f) => (
+              <li key={f} className="label-mono text-muted-foreground">
+                · {f}
+              </li>
+            ))}
           </ul>
         </div>
       </div>
