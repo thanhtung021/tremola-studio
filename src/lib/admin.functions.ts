@@ -50,7 +50,7 @@ export type ListInput = z.infer<typeof listInput>;
 
 export const adminListLeads = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => listInput.parse(input))
+  .validator((input: unknown) => listInput.parse(input))
   .handler(async ({ data, context }) => {
     const supabase = await assertAdmin(context);
     const table = data.kind === "audit" ? "audit_requests" : "pack_signups";
@@ -94,7 +94,7 @@ const statusInput = z.object({
 
 export const adminUpdateLead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => statusInput.parse(input))
+  .validator((input: unknown) => statusInput.parse(input))
   .handler(async ({ data, context }) => {
     const supabase = await assertAdmin(context);
     const table = data.kind === "audit" ? "audit_requests" : "pack_signups";
@@ -116,7 +116,7 @@ const foundingInput = z
 
 export const adminSetFounding = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => foundingInput.parse(input))
+  .validator((input: unknown) => foundingInput.parse(input))
   .handler(async ({ data, context }) => {
     const supabase = await assertAdmin(context);
     const { error } = await supabase

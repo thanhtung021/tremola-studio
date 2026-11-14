@@ -15,10 +15,16 @@ const DAY = 86400;
 
 export class SubmissionError extends Error {}
 
+/** End-to-end tests run with E2E_MOCK_BACKEND=true: validate, then skip database, limits and email. */
+async function mockBackend() {
+  const { env } = await import("@/server/env.server");
+  return env("E2E_MOCK_BACKEND") === "true";
+}
+
 export const submitContactMessage = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => contactSchema.parse(input))
+  .validator((input: unknown) => contactSchema.parse(input))
   .handler(async ({ data }) => {
-    if (data.website) return { ok: true };
+    if (data.website || (await mockBackend())) return { ok: true };
     const { requestContext, withinRateLimits, logSubmissionError } =
       await import("@/server/leads.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -49,9 +55,9 @@ export const submitContactMessage = createServerFn({ method: "POST" })
   });
 
 export const submitAuditRequest = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => auditSchema.parse(input))
+  .validator((input: unknown) => auditSchema.parse(input))
   .handler(async ({ data }) => {
-    if (data.website) return { ok: true };
+    if (data.website || (await mockBackend())) return { ok: true };
     const { requestContext, withinRateLimits, logSubmissionError } =
       await import("@/server/leads.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
@@ -104,9 +110,13 @@ export const submitAuditRequest = createServerFn({ method: "POST" })
   });
 
 export const submitPackSignup = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => packSchema.parse(input))
+  .validator((input: unknown) => packSchema.parse(input))
   .handler(async ({ data }): Promise<{ ok: true; downloadUrl: string | null }> => {
     if (data.website) return { ok: true, downloadUrl: null };
+    if (await mockBackend()) {
+      const { signDownload, downloadPath } = await import("@/server/download.server");
+      return { ok: true, downloadUrl: downloadPath(await signDownload("e2e-mock")) };
+    }
     const { requestContext, withinRateLimits, logSubmissionError } =
       await import("@/server/leads.server");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");

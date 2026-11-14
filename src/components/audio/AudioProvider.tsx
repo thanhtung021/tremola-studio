@@ -98,7 +98,8 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       if (!a) return;
       stopExternal();
       if (current?.id === track.id) {
-        if (a.paused) void a.play();
+        if (a.paused)
+          void a.play().catch(() => {}); // interrupted by a newer pause/play: harmless
         else a.pause();
         return;
       }
@@ -107,7 +108,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
       setCurrent(track);
       setTime(0);
       setDuration(0);
-      void a.play();
+      void a.play().catch(() => {}); // interrupted by a newer pause/play: harmless
       trackEvent("audio_play", { track: track.title, page: window.location.pathname });
       if (!track.peaks && !peaks[track.id]) {
         computePeaks(track.src)
