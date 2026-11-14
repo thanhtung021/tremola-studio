@@ -1,0 +1,2 @@
+- Pages are shared components taking `locale`, with copy in `src/content/*.ts` as `Record<Locale, …>`; route files only pick the locale. Why: one layout, no language drift.
+- Head comes from `pageHead(locale, key, ctx)`; the root loader gives the absolute origin for og:image/canonical/hreflang. Why: no fixed domain yet.
