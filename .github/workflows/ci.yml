@@ -43,6 +43,9 @@ jobs:
         run: bunx playwright install chromium
       - name: Playwright smoke tests (mock backend)
         run: bunx playwright test
+        env:
+          VITE_SUPABASE_URL: ${{ env.PUBLIC_SUPABASE_URL }}
+          VITE_SUPABASE_PUBLISHABLE_KEY: ${{ env.PUBLIC_SUPABASE_PUBLISHABLE_KEY }}
       - uses: actions/upload-artifact@v4
         if: failure()
         with:

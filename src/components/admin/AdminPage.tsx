@@ -34,19 +34,25 @@ export function AdminPage() {
   const [session, setSession] = useState<Session | "loading">("loading");
 
   const refresh = useCallback(async () => {
-    const { data } = await supabase.auth.getSession();
-    if (!data.session) return setSession(null);
     try {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session) return setSession(null);
       setSession(await whoAmI());
-    } catch {
+    } catch (e) {
+      // Missing configuration or network failure: show the sign-in form, never crash the page.
+      console.error("admin session check failed", e);
       setSession(null);
     }
   }, [whoAmI]);
 
   useEffect(() => {
     void refresh();
-    const { data } = supabase.auth.onAuthStateChange(() => void refresh());
-    return () => data.subscription.unsubscribe();
+    try {
+      const { data } = supabase.auth.onAuthStateChange(() => void refresh());
+      return () => data.subscription.unsubscribe();
+    } catch {
+      return undefined;
+    }
   }, [refresh]);
 
   return (
