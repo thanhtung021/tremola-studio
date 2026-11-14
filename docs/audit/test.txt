@@ -1,0 +1,10 @@
+$ vitest run
+
+ RUN  v4.1.11 C:/Users/thanh/Desktop/Claude Code/tremola-studio
+
+
+ Test Files  4 passed (4)
+      Tests  13 passed (13)
+   Start at  15:46:10
+   Duration  20.28s (transform 1.51s, setup 27.56s, import 11.11s, tests 112ms, environment 7.81s)
+

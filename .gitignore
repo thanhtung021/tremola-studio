@@ -35,3 +35,7 @@ dist-ssr
 .env
 .env.*
 !.env.example
+# Local media masters (not in git)
+media-source/*
+!media-source/README.md
+.wrangler/
