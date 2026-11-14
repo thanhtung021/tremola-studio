@@ -18,6 +18,7 @@ export function SoundAuditPage({ locale }: { locale: Locale }) {
             <BeforeAfterPlayer
               placeholder
               video={placeholderMedia.video}
+              poster={placeholderMedia.poster}
               before={placeholderMedia.before}
               after={placeholderMedia.after}
             />

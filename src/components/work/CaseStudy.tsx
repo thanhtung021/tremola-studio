@@ -177,6 +177,7 @@ export function CaseStudy({ work: w }: { work: Work }) {
             <BeforeAfterPlayer
               placeholder
               video={w.beforeAfter.video}
+              {...(w.beforeAfter.poster ? { poster: w.beforeAfter.poster } : {})}
               before={w.beforeAfter.beforeAudio}
               after={w.beforeAfter.afterAudio}
             />

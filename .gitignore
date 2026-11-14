@@ -39,3 +39,4 @@ dist-ssr
 media-source/*
 !media-source/README.md
 .wrangler/
+media-build/

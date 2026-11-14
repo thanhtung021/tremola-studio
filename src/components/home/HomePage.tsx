@@ -130,6 +130,7 @@ function Showreel({ c }: P) {
       <BeforeAfterPlayer
         placeholder
         video={placeholderMedia.video}
+        poster={placeholderMedia.poster}
         before={placeholderMedia.before}
         after={placeholderMedia.after}
       />

@@ -30,6 +30,18 @@ export const fmtTime = (s: number) => {
   return `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 };
 
+/**
+ * Opus/WebM when the browser is confident it can play it, MP3 otherwise. Apple browsers always get
+ * MP3: their WebM/Opus support is recent and inconsistent across iOS versions.
+ */
+function pickSource(a: HTMLAudioElement, track: Track) {
+  if (!track.srcOpus) return track.src;
+  const apple = typeof navigator !== "undefined" && /Apple/.test(navigator.vendor);
+  return !apple && a.canPlayType('audio/webm; codecs="opus"') === "probably"
+    ? track.srcOpus
+    : track.src;
+}
+
 async function computePeaks(src: string, bars = 64): Promise<number[]> {
   const buf = await (await fetch(src)).arrayBuffer();
   const ctx = new AudioContext();
@@ -91,7 +103,7 @@ export function AudioProvider({ children }: { children: ReactNode }) {
         return;
       }
       a.pause();
-      a.src = track.src;
+      a.src = pickSource(a, track);
       setCurrent(track);
       setTime(0);
       setDuration(0);

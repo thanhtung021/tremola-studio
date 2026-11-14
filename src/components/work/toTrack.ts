@@ -5,6 +5,7 @@ export const toTrack = (slug: string, t: WorkTrack, i = 0): Track => ({
   id: `${slug}::${i}::${t.title}`,
   title: t.title,
   src: t.src,
+  ...(t.srcOpus ? { srcOpus: t.srcOpus } : {}),
   durationLabel: t.duration,
   ...(t.peaks ? { peaks: t.peaks } : {}),
 });

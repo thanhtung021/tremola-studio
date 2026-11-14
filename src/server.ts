@@ -50,6 +50,18 @@ function isH3SwallowedErrorBody(body: string): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
+    if (
+      url.pathname.startsWith("/media/") &&
+      (request.method === "GET" || request.method === "HEAD")
+    ) {
+      try {
+        const { handleMedia } = await import("./server/media.server");
+        return await handleMedia(request);
+      } catch (error) {
+        console.error(error);
+        return new Response("Media error", { status: 500 });
+      }
+    }
     if (url.pathname === "/api/pack/download" && request.method === "GET") {
       try {
         const { handlePackDownload } = await import("./server/pack-download.server");

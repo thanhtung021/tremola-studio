@@ -4,6 +4,7 @@ import { track } from "@/lib/track";
 import { cn } from "@/lib/utils";
 import { useLocale } from "@/i18n";
 import { fmtTime, useAudio } from "./AudioProvider";
+import { DualTrackEngine, type Mode } from "./dual-track-engine";
 
 type Props = {
   video: string;
@@ -14,91 +15,77 @@ type Props = {
   className?: string;
 };
 
-const FADE_MS = 300;
-
 /** One video timeline, two audio tracks, crossfaded without restarting the video. */
 export function BeforeAfterPlayer({ video, poster, before, after, placeholder, className }: Props) {
   const vi = useLocale().locale === "vi";
   const id = useId();
   const { claim } = useAudio();
   const vRef = useRef<HTMLVideoElement>(null);
-  const bRef = useRef<HTMLAudioElement>(null);
-  const aRef = useRef<HTMLAudioElement>(null);
-  const [mode, setMode] = useState<"before" | "after">("after");
+  const [mode, setMode] = useState<Mode>("after");
   const [playing, setPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const fadeRaf = useRef(0);
+  const engine = useRef<DualTrackEngine | null>(null);
 
-  const tracks = () => [bRef.current!, aRef.current!] as const;
+  const getEngine = () => {
+    if (!engine.current)
+      engine.current = new DualTrackEngine(
+        { before, after },
+        () => vRef.current,
+        (t, d) => {
+          setTime(t);
+          if (d) setDuration(d);
+        },
+        () => setPlaying(false),
+      );
+    return engine.current;
+  };
+
+  useEffect(() => {
+    const v = vRef.current;
+    const onMeta = () => v && !duration && setDuration(v.duration);
+    v?.addEventListener("loadedmetadata", onMeta);
+    return () => {
+      v?.removeEventListener("loadedmetadata", onMeta);
+      engine.current?.destroy();
+      engine.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [before, after]);
 
   function pauseAll() {
-    vRef.current?.pause();
-    tracks().forEach((t) => t?.pause());
+    engine.current?.pause();
     setPlaying(false);
-  }
-
-  function fadeTo(next: "before" | "after") {
-    const [b, a] = tracks();
-    cancelAnimationFrame(fadeRaf.current);
-    const from = { b: b.volume, a: a.volume };
-    const to = next === "before" ? { b: 1, a: 0 } : { b: 0, a: 1 };
-    const start = performance.now();
-    const step = (t: number) => {
-      const p = Math.min(1, (t - start) / FADE_MS);
-      b.volume = from.b + (to.b - from.b) * p;
-      a.volume = from.a + (to.a - from.a) * p;
-      if (p < 1) fadeRaf.current = requestAnimationFrame(step);
-    };
-    fadeRaf.current = requestAnimationFrame(step);
   }
 
   function toggleMode() {
     const next = mode === "before" ? "after" : "before";
     setMode(next);
-    fadeTo(next);
+    engine.current?.setMode(next);
     track("before_after_toggle", { to: next, page: window.location.pathname });
   }
 
   async function togglePlay() {
-    const v = vRef.current!;
-    const [b, a] = tracks();
     if (playing) return pauseAll();
+    const e = getEngine();
     claim(id, pauseAll);
-    b.volume = mode === "before" ? 1 : 0;
-    a.volume = mode === "after" ? 1 : 0;
-    b.currentTime = a.currentTime = v.currentTime;
-    await Promise.allSettled([v.play(), b.play(), a.play()]);
-    track("audio_play", { track: "Before / After", page: window.location.pathname });
-    setPlaying(true);
+    e.setMode(mode);
+    e.unlock(); // synchronous, inside the click: unlocks audio on iOS
+    setLoading(true);
+    try {
+      await e.play();
+      setPlaying(true);
+      track("audio_play", { track: "Before / After", page: window.location.pathname });
+    } catch (err) {
+      console.error("before/after playback failed", err);
+    } finally {
+      setLoading(false);
+    }
   }
 
-  // Keep the audio tracks locked to the video timeline.
-  useEffect(() => {
-    const v = vRef.current!;
-    const onTime = () => {
-      setTime(v.currentTime);
-      for (const t of tracks())
-        if (t && Math.abs(t.currentTime - v.currentTime) > 0.15) t.currentTime = v.currentTime;
-    };
-    const onMeta = () => setDuration(v.duration);
-    const onEnd = () => pauseAll();
-    v.addEventListener("timeupdate", onTime);
-    v.addEventListener("loadedmetadata", onMeta);
-    v.addEventListener("ended", onEnd);
-    return () => {
-      v.removeEventListener("timeupdate", onTime);
-      v.removeEventListener("loadedmetadata", onMeta);
-      v.removeEventListener("ended", onEnd);
-      cancelAnimationFrame(fadeRaf.current);
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   function seekTo(s: number) {
-    const v = vRef.current!;
-    v.currentTime = Math.max(0, Math.min(s, v.duration || s));
-    tracks().forEach((t) => (t.currentTime = v.currentTime));
+    void getEngine().seek(s);
   }
 
   return (
@@ -136,8 +123,6 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
           preload="none"
           className="size-full object-cover"
         />
-        <audio ref={bRef} src={before} preload="none" />
-        <audio ref={aRef} src={after} preload="none" />
         {placeholder && (
           <span className="label-mono absolute left-4 top-4 rounded-full border border-hairline bg-background/70 px-3 py-1 text-muted-foreground">
             Placeholder
@@ -147,7 +132,8 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
           <button
             type="button"
             onClick={() => void togglePlay()}
-            aria-label="Play"
+            aria-label={vi ? "Phát" : "Play"}
+            aria-busy={loading || undefined}
             className="group absolute inset-0 grid cursor-pointer place-items-center"
           >
             <span className="hover-tremolo grid size-20 place-items-center rounded-full border border-muted-foreground bg-background/60 text-muted-foreground backdrop-blur-sm">
@@ -160,7 +146,8 @@ export function BeforeAfterPlayer({ video, poster, before, after, placeholder, c
         <button
           type="button"
           onClick={() => void togglePlay()}
-          aria-label={playing ? "Pause" : "Play"}
+          aria-label={playing ? (vi ? "Tạm dừng" : "Pause") : vi ? "Phát" : "Play"}
+          aria-busy={loading || undefined}
           className={cn(
             "grid size-9 cursor-pointer place-items-center rounded-full border",
             playing

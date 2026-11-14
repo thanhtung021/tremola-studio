@@ -6,11 +6,12 @@ import calmLedger from "@/assets/work/calm-ledger.jpg";
 import lanternValley from "@/assets/work/lantern-valley.jpg";
 import moonLute from "@/assets/work/moon-lute-duel.jpg";
 import stick from "@/assets/work/stick.jpg";
-import { placeholderMedia } from "@/content/media";
+import { audioAsset, placeholderMedia } from "@/content/media";
 
 export type WorkTrack = {
   title: string;
   src: string;
+  srcOpus?: string;
   duration: string;
   instruments?: string[];
   peaks?: number[];
@@ -27,7 +28,7 @@ export type Work = {
   role: string;
   cover: { type: "image" | "video"; src: string; alt: string };
   heroTrack?: WorkTrack;
-  beforeAfter?: { video: string; beforeAudio: string; afterAudio: string };
+  beforeAfter?: { video: string; poster?: string; beforeAudio: string; afterAudio: string };
   summary: string;
   challenge: string;
   direction: string;
@@ -50,14 +51,20 @@ export const vietnameseInstruments = [
   "Đàn tỳ bà",
 ];
 
-const ph = (title: string, instruments?: string[]): WorkTrack => ({
-  title: `${title} (Placeholder)`,
-  src: placeholderMedia.after,
-  duration: "0:24",
-  ...(instruments ? { instruments } : {}),
-});
+const ph = (title: string, instruments?: string[]): WorkTrack => {
+  const a = audioAsset("placeholder-after");
+  return {
+    title: `${title} (Placeholder)`,
+    src: a.src,
+    ...(a.srcOpus ? { srcOpus: a.srcOpus } : {}),
+    duration: a.durationLabel,
+    ...(a.peaks ? { peaks: a.peaks } : {}),
+    ...(instruments ? { instruments } : {}),
+  };
+};
 const phBeforeAfter = {
   video: placeholderMedia.video,
+  poster: placeholderMedia.poster,
   beforeAudio: placeholderMedia.before,
   afterAudio: placeholderMedia.after,
 };
