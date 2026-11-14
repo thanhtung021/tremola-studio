@@ -35,8 +35,15 @@ bun run build          # → .output/ (Worker + static assets)
 bun run lint           # eslint + prettier
 bunx tsc --noEmit
 bun run test           # vitest
-python scripts/lh-summary.py docs/audit/lighthouse/*.json   # summarize Lighthouse runs
+bun run e2e            # Playwright smoke tests (mock backend, local Chrome); --grep @remote with E2E_BASE_URL=...
+bun run media -- --upload   # process media-source/ -> media-build/ (+R2), needs FFMPEG=<path>
+python scripts/lh-summary.py docs/audit/<dir>/*.json   # summarize Lighthouse runs
+npx wrangler@4 deploy --config .output/server/wrangler.json   # after a build; see docs/DEPLOY.md
 ```
+
+Local ffmpeg: `C:\Users\thanh\AppData\Local\Programs\Python\Python312\Lib\site-packages\imageio_ffmpeg\binaries\ffmpeg-win-x86_64-v7.1.exe`.
+Windows Defender once quarantined a built JS chunk (`UNKNOWN: open ...assets/x.js`): change the
+module's content/name so the chunk hash changes. Stop `wrangler dev` before building (EBUSY).
 
 Node/bun are a portable install in `%LOCALAPPDATA%\node`; prefix `PATH` with it in scripts.
 
@@ -55,7 +62,13 @@ Node/bun are a portable install in `%LOCALAPPDATA%\node`; prefix `PATH` with it 
 | `src/lib/leads.ts` | Shared zod schemas + `isQualified()`; `leads.functions.ts` = server functions |
 | `src/integrations/supabase/` | Supabase clients/middleware (originally Lovable-generated) |
 | `drizzle/migrations/` | Original Lovable SQL (reference); `supabase/migrations/` = our migrations |
-| `docs/` | HANDOFF, BRAND, audit, reports, guides |
+| `src/server/` | Server-only modules (`*.server.ts`): env/bindings, rate limits, email, signed downloads, /media, health |
+| `src/server.ts` | Worker entry: host redirects, /media, /api/pack/download, /api/health, /api/client-error, SSR |
+| `src/components/admin/`, `src/lib/admin.functions.ts` | /admin (Supabase Auth + RLS) |
+| `supabase/migrations/` | Schema source of truth (apply in order; docs/BACKEND.md) |
+| `scripts/` | process-audio (media pipeline), generate-seo (sitemap/robots), lh-summary |
+| `e2e/` | Playwright smoke tests + fixtures |
+| `docs/` | HANDOFF, BRAND, BACKEND, DEPLOY, CONTENT-GUIDE (VI), audit, reports |
 | `media-source/` | Local master media (git-ignored except README) |
 
 ## Gotchas
