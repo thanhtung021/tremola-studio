@@ -6,7 +6,7 @@ import calmLedger from "@/assets/work/calm-ledger.jpg";
 import lanternValley from "@/assets/work/lantern-valley.jpg";
 import moonLute from "@/assets/work/moon-lute-duel.jpg";
 import stick from "@/assets/work/stick.jpg";
-import { audioAsset, placeholderMedia } from "@/content/media";
+import { audioAsset, placeholderMedia, videoAsset } from "@/content/media";
 
 export type WorkTrack = {
   title: string;
@@ -62,6 +62,33 @@ const ph = (title: string, instruments?: string[]): WorkTrack => {
     ...(instruments ? { instruments } : {}),
   };
 };
+/**
+ * A real track processed by scripts/process-audio.mjs. `id` = the master file name without extension
+ * in media-source/audio/ (e.g. "lantern-main" for lantern-main.wav). See docs/CONTENT-GUIDE.md.
+ */
+export const audio = (id: string, title: string, instruments?: string[]): WorkTrack => {
+  const a = audioAsset(id);
+  return {
+    title,
+    src: a.src,
+    ...(a.srcOpus ? { srcOpus: a.srcOpus } : {}),
+    duration: a.durationLabel,
+    ...(a.peaks ? { peaks: a.peaks } : {}),
+    ...(instruments ? { instruments } : {}),
+  };
+};
+
+/** Before/After from processed media ids (video + two audio masters of the same length). */
+export const beforeAfter = (videoId: string, beforeId: string, afterId: string) => {
+  const v = videoAsset(videoId);
+  return {
+    video: v.src,
+    poster: v.poster,
+    beforeAudio: audioAsset(beforeId).src,
+    afterAudio: audioAsset(afterId).src,
+  };
+};
+
 const phBeforeAfter = {
   video: placeholderMedia.video,
   poster: placeholderMedia.poster,

@@ -13,7 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import { LazyMotion } from "framer-motion";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
+import { installClientErrorReporting, reportClientError } from "../lib/client-errors";
 import { localeFromPath } from "../i18n";
 import { getRequestOrigin } from "../lib/origin.functions";
 import { getFounding } from "../lib/founding.functions";
@@ -51,7 +51,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
+    reportClientError(error, { boundary: "root_error_component" });
   }, [error]);
 
   return (
@@ -177,6 +177,7 @@ function RootComponent() {
   useEffect(() => {
     captureAttribution();
     initTracking();
+    installClientErrorReporting();
     // CTA clicks: any link to the audit or the free pack.
     const onClick = (e: MouseEvent) => {
       const a = (e.target as HTMLElement | null)?.closest?.("a");

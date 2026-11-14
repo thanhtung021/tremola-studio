@@ -44,12 +44,25 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+const CANONICAL_ORIGIN = "https://tremolastudio.com";
+const REDIRECT_HOSTS = new Set([
+  "www.tremolastudio.com",
+  "tremola.studio",
+  "www.tremola.studio",
+  "tremola.vn",
+  "www.tremola.vn",
+]);
+
 // Hosting compresses every response at the edge. Never compress a body (gzip, brotli,
 // CompressionStream) or set content-encoding here or in a server route: the body gets encoded
 // twice and renders garbled.
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     const url = new URL(request.url);
+    // Secondary domains (www, tremola.studio, tremola.vn) → 301 to the canonical origin, HTTPS.
+    if (REDIRECT_HOSTS.has(url.hostname)) {
+      return Response.redirect(`${CANONICAL_ORIGIN}${url.pathname}${url.search}`, 301);
+    }
     if (
       url.pathname.startsWith("/media/") &&
       (request.method === "GET" || request.method === "HEAD")
@@ -61,6 +74,33 @@ export default {
         console.error(error);
         return new Response("Media error", { status: 500 });
       }
+    }
+    if (url.pathname === "/api/health") {
+      // Uptime monitor target: checks the Worker and a cheap database read. Also keeps the
+      // Supabase Free project from pausing for inactivity.
+      try {
+        const { healthCheck } = await import("./server/health.server");
+        const h = await healthCheck();
+        return Response.json(h, {
+          status: h.ok ? 200 : 503,
+          headers: { "cache-control": "no-store" },
+        });
+      } catch (error) {
+        console.error(error);
+        return Response.json({ ok: false }, { status: 503 });
+      }
+    }
+    if (url.pathname === "/api/client-error" && request.method === "POST") {
+      // Browser error beacon → Worker Logs (Cloudflare Observability). Size-capped, never echoed.
+      try {
+        const origin = request.headers.get("origin");
+        if (origin && new URL(origin).host !== url.host) return new Response(null, { status: 204 });
+        const text = (await request.text()).slice(0, 5000);
+        console.error(`[client-error] ${text}`);
+      } catch {
+        /* ignore */
+      }
+      return new Response(null, { status: 204 });
     }
     if (url.pathname === "/api/pack/download" && request.method === "GET") {
       try {

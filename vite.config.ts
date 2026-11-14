@@ -25,6 +25,20 @@ const nitro = {
     wrangler: {
       name: workerName,
       observability: { enabled: true, head_sampling_rate: 1 },
+      // Vars/secrets are managed in the Cloudflare dashboard / `wrangler secret put`; never wipe them.
+      keep_vars: true,
+      // Production only: custom domains (Cloudflare creates the DNS records + certificates).
+      // Secondary hosts are 301-redirected to tremolastudio.com by src/server.ts.
+      ...(workerName === "tremola"
+        ? {
+            routes: [
+              "tremolastudio.com",
+              "www.tremolastudio.com",
+              "tremola.studio",
+              "www.tremola.studio",
+            ].map((pattern) => ({ pattern, custom_domain: true })),
+          }
+        : {}),
       r2_buckets: [
         { binding: "MEDIA", bucket_name: process.env["MEDIA_BUCKET"] ?? "tremola-media" },
         { binding: "PACKS", bucket_name: process.env["PACKS_BUCKET"] ?? "tremola-packs" },
