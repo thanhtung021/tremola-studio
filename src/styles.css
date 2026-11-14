@@ -1,14 +1,7 @@
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
-/* Self-hosted fonts (same families/weights as the former Google Fonts link). Each file carries
-   unicode-range per subset, so browsers fetch only latin / latin-ext / vietnamese files as needed. */
-@import "@fontsource/be-vietnam-pro/400.css";
-@import "@fontsource/be-vietnam-pro/500.css";
-@import "@fontsource/cormorant-garamond/500.css";
-@import "@fontsource/cormorant-garamond/600.css";
-@import "@fontsource/cormorant-garamond/500-italic.css";
-@import "@fontsource/jetbrains-mono/400.css";
+@import "./fonts.css";
 
 @custom-variant dark (&:is(.dark *));
 

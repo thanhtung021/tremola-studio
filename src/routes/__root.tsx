@@ -13,6 +13,9 @@ import { useEffect, type ReactNode } from "react";
 import { LazyMotion } from "framer-motion";
 
 import appCss from "../styles.css?url";
+// Hero fonts (body text = LCP, display = h1): preloaded so text paints in the brand fonts sooner.
+import fontBody from "../../node_modules/@fontsource/be-vietnam-pro/files/be-vietnam-pro-latin-400-normal.woff2?url";
+import fontDisplay from "../../node_modules/@fontsource/cormorant-garamond/files/cormorant-garamond-latin-500-normal.woff2?url";
 import { installClientErrorReporting, reportClientError } from "../lib/client-errors";
 import { localeFromPath } from "../i18n";
 import { getRequestOrigin } from "../lib/origin.functions";
@@ -145,6 +148,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "preload", href: fontBody, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+      {
+        rel: "preload",
+        href: fontDisplay,
+        as: "font",
+        type: "font/woff2",
+        crossOrigin: "anonymous",
+      },
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
@@ -170,7 +181,23 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
-const loadMotionFeatures = () => import("../lib/motion-features").then((m) => m.default);
+/**
+ * Animation features load after the page has finished loading (and the browser is idle), so they
+ * never compete with the content for bandwidth. Above-the-fold motion uses CSS (Reveal eager).
+ */
+const afterLoad = () =>
+  new Promise<void>((resolve) => {
+    const idle = () =>
+      "requestIdleCallback" in window
+        ? window.requestIdleCallback(() => resolve(), { timeout: 1500 })
+        : setTimeout(resolve, 200);
+    if (document.readyState === "complete") idle();
+    else window.addEventListener("load", idle, { once: true });
+  });
+const loadMotionFeatures = () =>
+  afterLoad()
+    .then(() => import("../lib/motion-features"))
+    .then((m) => m.default);
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
