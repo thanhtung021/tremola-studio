@@ -62,7 +62,7 @@ With the CLI (CI or another machine): `supabase link --project-ref <ref>` then `
 4. Sign in at `/admin`. Remove access: `delete from public.user_roles where user_id = …;`
 
 **Auth URL settings:** Authentication → URL Configuration → Site URL `https://tremolastudio.com`,
-Redirect URLs `https://tremolastudio.com/admin`, `https://*.workers.dev/admin`, `http://localhost:8100/admin`.
+Redirect URLs `https://tremolastudio.com/admin`, `https://tremola-preview.thanhtungtran1002.workers.dev/admin` (never a `*.workers.dev` wildcard: anyone can own a workers.dev subdomain), `http://localhost:8100/admin`.
 
 ## Keys and where they go
 
