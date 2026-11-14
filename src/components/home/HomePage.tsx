@@ -13,7 +13,7 @@ import { TremolaLogo } from "@/components/brand/TremolaLogo";
 import { routes } from "@/components/layout/nav";
 import { Button } from "@/components/ui/button";
 import { WorkCard } from "@/components/work/WorkCard";
-import { founding } from "@/config/founding";
+import { useFounding } from "@/hooks/use-founding";
 import { homeContent, type HomeContent } from "@/content/home";
 import { placeholderMedia } from "@/content/media";
 import { publishedWork } from "@/data/work";
@@ -325,6 +325,7 @@ function HowWeWork({ c }: P) {
 }
 
 function FoundingStrip({ c, r }: P) {
+  const founding = useFounding();
   if (founding.remaining <= 0) return null;
   const pct = (founding.remaining / founding.total) * 100;
   return (

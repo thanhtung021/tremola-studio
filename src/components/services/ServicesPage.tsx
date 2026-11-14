@@ -9,7 +9,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { founding } from "@/config/founding";
+import { useFounding } from "@/hooks/use-founding";
 import { servicesContent } from "@/content/services";
 import {
   formatListed,
@@ -28,6 +28,7 @@ import { useEffect } from "react";
 
 function PackageCard({ p, locale }: { p: Package; locale: Locale }) {
   const { currency } = pricing[locale];
+  const founding = useFounding();
   const discounted = showFounding(p, founding.remaining);
   const c = servicesContent[locale];
   return (
@@ -70,6 +71,7 @@ function PackageCard({ p, locale }: { p: Package; locale: Locale }) {
 }
 
 export function ServicesPage({ locale }: { locale: Locale }) {
+  const founding = useFounding();
   useEffect(() => track("pricing_view", { locale }), [locale]);
   const pkgs = pricing[locale].packages;
   const c = servicesContent[locale];

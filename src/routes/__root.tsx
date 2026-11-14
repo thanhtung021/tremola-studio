@@ -15,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { localeFromPath } from "../i18n";
 import { getRequestOrigin } from "../lib/origin.functions";
+import { getFounding } from "../lib/founding.functions";
 import { Navbar } from "../components/layout/Navbar";
 import { Footer } from "../components/layout/Footer";
 import { AudioProvider } from "../components/audio/AudioProvider";
@@ -84,9 +85,19 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: async () => ({
-    origin: typeof window !== "undefined" ? window.location.origin : await getRequestOrigin(),
-  }),
+  loader: async () => {
+    // Canonical/OG/hreflang always use the configured public origin when set, so pages served from
+    // workers.dev or redirect domains still point search engines at tremolastudio.com.
+    const configured = (import.meta.env["VITE_SITE_URL"] as string | undefined)?.replace(
+      /\/+$/,
+      "",
+    );
+    const [origin, founding] = await Promise.all([
+      configured || (typeof window !== "undefined" ? window.location.origin : getRequestOrigin()),
+      getFounding(),
+    ]);
+    return { origin, founding };
+  },
   staleTime: Infinity,
   head: ({ loaderData }) => ({
     scripts: [
