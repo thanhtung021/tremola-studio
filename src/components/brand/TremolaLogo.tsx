@@ -1,4 +1,4 @@
-import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
+import { m, useAnimationControls, useReducedMotion } from "framer-motion";
 import { useEffect, useId, useState } from "react";
 import { ease, tremoloKeyframes } from "@/lib/motion";
 
@@ -61,7 +61,7 @@ export function TremolaLogo({
 
   const i = playIntro; // whether to start from hidden state
   return (
-    <motion.svg
+    <m.svg
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 64 64"
       width={size}
@@ -79,7 +79,7 @@ export function TremolaLogo({
         </mask>
       </defs>
       {withTile && <rect className="t-tile" width="64" height="64" rx="12" fill={C.tile} />}
-      <motion.circle
+      <m.circle
         className="t-ring"
         cx="32"
         cy="32"
@@ -93,7 +93,7 @@ export function TremolaLogo({
         transition={{ duration: 0.9, ease }}
         style={{ rotate: -90, transformOrigin: "32px 32px" }}
       />
-      <motion.circle
+      <m.circle
         className="t-moon"
         cx="30"
         cy="33"
@@ -105,10 +105,10 @@ export function TremolaLogo({
         transition={{ delay: 0.3, duration: 0.6, ease }}
         style={{ transformOrigin: "30px 33px" }}
       />
-      <motion.g animate={pluck}>
+      <m.g animate={pluck}>
         <g className="t-bamboo" fill={C.ivory}>
           {segs.map((s, idx) => (
-            <motion.rect
+            <m.rect
               key={idx}
               className="t-seg"
               x="43"
@@ -123,7 +123,7 @@ export function TremolaLogo({
             />
           ))}
         </g>
-        <motion.path
+        <m.path
           className="t-leaf"
           fill={C.ivory}
           d="M45 21.2C46.6 18.4 49 16.6 52 16c-1.2 2.8-3.6 4.6-7 5.2z"
@@ -132,7 +132,7 @@ export function TremolaLogo({
           transition={{ delay: 0.85, duration: 0.4, ease }}
           style={{ transformOrigin: "45px 21.2px" }}
         />
-      </motion.g>
-    </motion.svg>
+      </m.g>
+    </m.svg>
   );
 }

@@ -2,7 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { instrumentImages } from "@/content/instrument-images";
 import { responsiveImage } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { useEffect, useState, type ReactNode } from "react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { useAudio } from "@/components/audio/AudioProvider";
@@ -279,7 +279,7 @@ function HowWeWork({ c }: P) {
       <Reveal>
         <h2 className="mb-16">{c.howTitle}</h2>
       </Reveal>
-      <motion.ol
+      <m.ol
         className="relative grid gap-10 md:grid-cols-5 md:gap-6"
         initial="hidden"
         whileInView="visible"
@@ -290,7 +290,7 @@ function HowWeWork({ c }: P) {
           },
         }}
       >
-        <motion.span
+        <m.span
           aria-hidden
           className="absolute left-[5px] top-0 h-full w-px origin-top bg-gold md:left-0 md:top-[5px] md:h-px md:w-full md:origin-left"
           variants={{
@@ -304,7 +304,7 @@ function HowWeWork({ c }: P) {
           }}
         />
         {c.steps.map((s) => (
-          <motion.li
+          <m.li
             key={s.n}
             className="relative pl-8 md:pl-0 md:pt-10"
             variants={{
@@ -319,9 +319,9 @@ function HowWeWork({ c }: P) {
             <p className="label-mono text-muted-foreground">{s.n}</p>
             <h3 className="mt-2">{s.title}</h3>
             <p className="mt-2 text-small">{s.text}</p>
-          </motion.li>
+          </m.li>
         ))}
-      </motion.ol>
+      </m.ol>
     </section>
   );
 }

@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { TremolaLogo } from "@/components/brand/TremolaLogo";
@@ -106,21 +106,21 @@ export function Navbar() {
 
       <AnimatePresence>
         {open && (
-          <motion.div
+          <m.div
             className="fixed inset-x-0 bottom-0 top-18 bg-background lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <motion.ul
+            <m.ul
               className="container-site flex flex-col gap-6 pt-12"
               initial="hidden"
               animate="visible"
               variants={{ visible: { transition: { staggerChildren: 0.08 } } }}
             >
               {links.map((l) => (
-                <motion.li
+                <m.li
                   key={l.label}
                   variants={{
                     hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 16 },
@@ -139,9 +139,9 @@ export function Navbar() {
                   >
                     {l.label}
                   </Link>
-                </motion.li>
+                </m.li>
               ))}
-              <motion.li
+              <m.li
                 variants={{ hidden: { opacity: 0 }, visible: { opacity: 1 } }}
                 className="flex flex-col gap-6 pt-6"
               >
@@ -149,9 +149,9 @@ export function Navbar() {
                   <Link to={r.audit}>{t.nav.audit}</Link>
                 </Button>
                 <LangSwitch />
-              </motion.li>
-            </motion.ul>
-          </motion.div>
+              </m.li>
+            </m.ul>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

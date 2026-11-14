@@ -212,3 +212,23 @@ test("Vietnamese pages: diacritics in every font, no heading overflow at 375 px 
     expect(result.pageOverflow, `${url}: horizontal page scroll`).toBe(false);
   }
 });
+
+test("scroll-in animations reveal every section (no content stuck invisible) @remote", async ({
+  page,
+}) => {
+  for (const url of ["/", "/services", "/about", "/work/lantern-valley"]) {
+    await open(page, url);
+    const height = await page.evaluate(() => document.body.scrollHeight);
+    for (let y = 0; y <= height; y += 400) {
+      await page.mouse.wheel(0, 400);
+      await page.waitForTimeout(120);
+    }
+    await page.waitForTimeout(1200);
+    const stuck = await page.evaluate(() =>
+      [...document.querySelectorAll<HTMLElement>("main *")]
+        .filter((e) => e.style.opacity === "0" && e.textContent?.trim())
+        .map((e) => e.textContent!.trim().slice(0, 40)),
+    );
+    expect(stuck, `${url}: elements still at opacity 0 after scrolling`).toEqual([]);
+  }
+});

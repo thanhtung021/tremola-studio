@@ -1,4 +1,4 @@
-import { LayoutGroup, motion, useReducedMotion } from "framer-motion";
+import { LayoutGroup, m, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/brand/Reveal";
 import { isAsianSignature, publishedWork } from "@/data/work";
 import { ease } from "@/lib/motion";
@@ -68,9 +68,9 @@ export function WorkListPage({
         </div>
       ) : (
         <LayoutGroup>
-          <motion.ul layout className="mt-12 grid gap-6 md:grid-cols-2">
+          <m.ul layout className="mt-12 grid gap-6 md:grid-cols-2">
             {items.map((w, i) => (
-              <motion.li
+              <m.li
                 key={w.slug}
                 layout={!reduce}
                 // Fade-in runs in CSS (.reveal-fade) so the first cover paints before hydration.
@@ -79,9 +79,9 @@ export function WorkListPage({
                 className={i === 0 ? "reveal-fade md:col-span-2" : "reveal-fade"}
               >
                 <WorkCard work={w} featured={i === 0} priority={i === 0} headingLevel={2} />
-              </motion.li>
+              </m.li>
             ))}
-          </motion.ul>
+          </m.ul>
         </LayoutGroup>
       )}
     </div>

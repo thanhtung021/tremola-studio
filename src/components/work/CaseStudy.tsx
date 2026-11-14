@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { useAudio } from "@/components/audio/AudioProvider";
 import { BeforeAfterPlayer } from "@/components/audio/BeforeAfterPlayer";
@@ -122,7 +122,7 @@ export function CaseStudy({ work: w }: { work: Work }) {
               className="aspect-[21/9] w-full object-cover"
             />
           ) : (
-            <motion.img
+            <m.img
               src={w.cover.src}
               {...responsiveImage(w.cover.src)}
               sizes="100vw"

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, m, useReducedMotion } from "framer-motion";
 import { X } from "lucide-react";
 import { ease } from "@/lib/motion";
 import { fmtTime, useAudio } from "./AudioProvider";
@@ -12,7 +12,7 @@ export function MiniPlayer() {
   return (
     <AnimatePresence>
       {show && current && (
-        <motion.div
+        <m.div
           role="region"
           aria-label="Now playing"
           initial={reduce ? { opacity: 0 } : { y: "100%" }}
@@ -55,7 +55,7 @@ export function MiniPlayer() {
               <X className="size-4" />
             </button>
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );

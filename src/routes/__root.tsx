@@ -10,6 +10,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { LazyMotion } from "framer-motion";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -169,6 +170,8 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+const loadMotionFeatures = () => import("../lib/motion-features").then((m) => m.default);
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useEffect(() => {
@@ -192,21 +195,23 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <AudioProvider>
-        <a
-          href="#main"
-          className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-gold focus:px-4 focus:py-2 focus:text-primary-foreground"
-        >
-          Skip to content
-        </a>
-        <Navbar />
-        <main id="main">
-          <Outlet />
-        </main>
-        <Footer />
-        <MiniPlayer />
-        <CookieNotice />
-      </AudioProvider>
+      <LazyMotion features={loadMotionFeatures} strict>
+        <AudioProvider>
+          <a
+            href="#main"
+            className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-gold focus:px-4 focus:py-2 focus:text-primary-foreground"
+          >
+            Skip to content
+          </a>
+          <Navbar />
+          <main id="main">
+            <Outlet />
+          </main>
+          <Footer />
+          <MiniPlayer />
+          <CookieNotice />
+        </AudioProvider>
+      </LazyMotion>
     </QueryClientProvider>
   );
 }

@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
 import { fadeUp, reducedFade } from "@/lib/motion";
 
@@ -29,7 +29,7 @@ export function Reveal({
       </Tag>
     );
   }
-  const Comp = as === "section" ? motion.section : motion.div;
+  const Comp = as === "section" ? m.section : m.div;
   return (
     <Comp
       id={id}
