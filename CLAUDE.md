@@ -57,7 +57,7 @@ Node/bun are a portable install in `%LOCALAPPDATA%\node`; prefix `PATH` with it 
 | `src/components/brand/`, `layout/`, `ui/` | Logo/motion bits, nav/footer/cookie notice, vendored shadcn |
 | `src/i18n/` | EN/VI dictionaries, locale helpers, `pageHead()` (title/description/OG/canonical/hreflang) |
 | `src/content/` | Bilingual page copy, form copy, media map |
-| `src/data/work.ts`, `src/data/pricing.ts` | Portfolio and prices (typed, edited by hand) |
+| `src/data/work.ts`, `src/data/pricing.ts` | Portfolio demos (EN/VI copy, packages) and prices (typed, edited by hand) |
 | `src/config/` | Founding slots, site config (tracking IDs, pack URL) |
 | `src/lib/leads.ts` | Shared zod schemas + `isQualified()`; `leads.functions.ts` = server functions |
 | `src/integrations/supabase/` | Supabase clients/middleware (originally Lovable-generated) |
@@ -76,4 +76,4 @@ Node/bun are a portable install in `%LOCALAPPDATA%\node`; prefix `PATH` with it 
 - SSR runs in workerd: bundle everything, no Node child_process, no runtime module resolution.
 - `src/routeTree.gen.ts` is generated — never edit.
 - `qualified` is computed only on the server (`isQualified`) and never sent to the browser.
-- Portfolio slug for Stick is `stick-english-learning-app` (HANDOFF says `stick`).
+- Portfolio = 8 sales demo videos (EN cut on /work, VN cut on /vi/work) from `media-source/demos/`, uploaded with `process-audio.mjs --demos-only --upload`; posters in `src/assets/work/<slug>-<en|vi>.jpg`.

@@ -13,6 +13,9 @@
  * Video  (media-source/video/<id>.{mov,mp4,mkv,webm}):
  *   H.264 MP4 (faststart, no audio track: players are muted and audio comes separately)
  *   + a poster JPEG and WebP taken at 1 s.
+ * Demo   (media-source/demos/<slug>-<en|vi>.mp4): portfolio demo videos WITH their soundtrack.
+ *   H.264 1080p (CRF 23, capped at 5 Mbps) + AAC 160 kbps, faststart, loudness untouched (the
+ *   demos are mastered as delivered). `--demos-only` skips the audio/video folders.
  *
  * Output file names carry a content hash so they can be cached forever (immutable).
  * The manifest src/content/media-manifest.json is rewritten with paths, durations and peaks.
@@ -35,6 +38,7 @@ const SRC = opt("src", "media-source");
 const OUT = opt("out", "media-build");
 const ONLY = opt("only", null);
 const UPLOAD = args.includes("--upload");
+const DEMOS_ONLY = args.includes("--demos-only");
 const BUCKET = process.env.MEDIA_BUCKET ?? "tremola-media";
 const FFMPEG = process.env.FFMPEG ?? "ffmpeg";
 const MANIFEST = "src/content/media-manifest.json";
@@ -242,6 +246,59 @@ function processVideo({ id, file }) {
   };
 }
 
+function processDemo({ id, file }) {
+  const h = hashOf(file);
+  const rel = `demo/${id}.${h}.mp4`;
+  mkdirSync(path.join(OUT, "demo"), { recursive: true });
+  const mp4 = path.join(OUT, rel);
+  if (!existsSync(mp4)) {
+    ff([
+      "-y",
+      "-i",
+      file,
+      "-c:v",
+      "libx264",
+      "-preset",
+      "medium",
+      "-crf",
+      "23",
+      "-maxrate",
+      "5M",
+      "-bufsize",
+      "10M",
+      "-pix_fmt",
+      "yuv420p",
+      "-vf",
+      "scale='min(1920,iw)':-2",
+      "-c:a",
+      "aac",
+      "-b:a",
+      "160k",
+      "-ar",
+      "48000",
+      "-movflags",
+      "+faststart",
+      "-map_metadata",
+      "-1",
+      mp4,
+    ]);
+  }
+  const info = ff(["-i", mp4, "-f", "null", "-"]).stderr;
+  const [, w, hgt] = /, (\d{2,5})x(\d{2,5})/.exec(info) ?? [];
+  const dur = /Duration: (\d+):(\d+):([\d.]+)/.exec(info);
+  const duration = dur ? Number(dur[1]) * 3600 + Number(dur[2]) * 60 + Number(dur[3]) : 0;
+  const s = Math.round(duration);
+  console.log(`  demo ${id}: ${w}x${hgt}, ${duration.toFixed(2)} s`);
+  return {
+    mp4: rel,
+    width: Number(w),
+    height: Number(hgt),
+    duration,
+    durationLabel: `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`,
+    source: path.basename(file),
+  };
+}
+
 function upload(files) {
   const types = {
     ".mp3": "audio/mpeg",
@@ -284,15 +341,21 @@ const manifest = existsSync(MANIFEST)
   : { audio: {}, video: {} };
 const produced = [];
 console.log(`ffmpeg: ${FFMPEG}`);
-for (const input of listInputs(path.join(SRC, "audio"), AUDIO_EXT)) {
+manifest.demo ??= {};
+for (const input of DEMOS_ONLY ? [] : listInputs(path.join(SRC, "audio"), AUDIO_EXT)) {
   const entry = processAudio(input);
   manifest.audio[input.id] = entry;
   produced.push(entry.mp3, entry.opus, entry.peaksPath);
 }
-for (const input of listInputs(path.join(SRC, "video"), VIDEO_EXT)) {
+for (const input of DEMOS_ONLY ? [] : listInputs(path.join(SRC, "video"), VIDEO_EXT)) {
   const entry = processVideo(input);
   manifest.video[input.id] = entry;
   produced.push(entry.mp4, entry.poster, entry.posterWebp);
+}
+for (const input of listInputs(path.join(SRC, "demos"), new Set([".mp4", ".mov"]))) {
+  const entry = processDemo(input);
+  manifest.demo[input.id] = entry;
+  produced.push(entry.mp4);
 }
 manifest.generatedAt = new Date().toISOString();
 // Keep each peaks array on one line so manifest diffs stay readable.

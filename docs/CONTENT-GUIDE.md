@@ -21,23 +21,28 @@ Quy tắc chữ (docs/BRAND.md): không dùng "cheap", "affordable", "outsourcin
 
 Lead mới cũng được gửi email đến sales inbox. Mục tiêu là trả lời trong 24 giờ; tiêu đề email có chữ **[QUALIFIED]** với lead đạt chuẩn.
 
-## 2. Thêm một dự án portfolio
+## 2. Thêm hoặc thay một demo portfolio
 
-File: `src/data/work.ts`
+Portfolio là các video demo chào hàng (bộ gốc ở `Desktop/Tremola/demo/Tremola_Demos`). Mỗi demo có 2 bản chữ: trang `/work` dùng bản EN, trang `/vi/work` dùng bản VN. Dữ liệu ở `src/data/work.ts`.
 
-1. **Ảnh bìa:** chép ảnh 1600×912 (JPG) vào `src/assets/work/ten-du-an.jpg`. Tạo 2 bản WebP cùng tên với hậu tố `-800.webp` và `-1600.webp` (nhờ kỹ sư chạy lệnh ffmpeg trong `docs/CONTENT-GUIDE.md#lenh-anh`, hoặc dùng squoosh.app với chất lượng 78).
-2. Ở đầu file thêm dòng import, ví dụ: `import tenDuAn from "@/assets/work/ten-du-an.jpg";`
-3. Chép nguyên một khối `{ slug: "...", ... }` có sẵn (ví dụ `calm-ledger`), dán vào cuối danh sách `work`, rồi sửa:
-   - `slug`: chữ thường, gạch nối, không dấu. Slug này là đường dẫn `/work/<slug>`, và không đổi sau khi đã đăng.
-   - `title`, `summary`, `challenge`, `direction`, `role`, `tags`: tiếng Anh.
-   - `vi: { title, role, summary, challenge, direction, tags }`: tiếng Việt. Thiếu trường nào thì trang /vi hiện bản tiếng Anh của trường đó.
-   - `kind`: `"client"` (dự án thật, có khách), `"concept"` (demo gốc, tự hiện badge "Original concept") hoặc `"personal"`.
-   - `line`: `"game"`, `"app"` hoặc `"media"`.
-   - `cover: { type: "image", src: tenDuAn, alt: "Mô tả ảnh bằng tiếng Anh" }`.
-   - `results` và `credits`: **chỉ điền khi có số liệu / sự cho phép thật**.
-   - `status: "draft"` để giấu, `"published"` để hiện.
-4. Track nhạc: xem mục 3.
-5. Sitemap tự cập nhật khi build, không cần làm gì thêm.
+1. **Video:** chép 2 file vào `media-source/demos/` và đặt tên `<slug>-en.mp4` và `<slug>-vi.mp4` (slug: chữ thường, gạch nối, không dấu, ví dụ `the-hospital`). Slug là đường dẫn `/work/<slug>` và không đổi sau khi đã đăng.
+2. Kỹ sư (hoặc ai có quyền Cloudflare) chạy:
+   ```bash
+   FFMPEG=<đường dẫn ffmpeg> node scripts/process-audio.mjs --demos-only --upload
+   ```
+   Video được nén H.264 1080p + AAC, giữ nguyên âm lượng đã master, đưa lên R2 và ghi vào `src/content/media-manifest.json`.
+3. **Ảnh bìa:** lấy một khung hình đẹp của mỗi bản (16:9, rộng 1600 px) thành `src/assets/work/<slug>-en.jpg` và `<slug>-vi.jpg`, kèm 2 bản WebP (`-800.webp`, `-1600.webp`, lệnh ở phụ lục). Ví dụ lấy khung ở giây 28:
+   ```bash
+   ffmpeg -ss 28 -i media-source/demos/the-hospital-en.mp4 -frames:v 1 -vf scale=1600:-2 -q:v 3 src/assets/work/the-hospital-en.jpg
+   ```
+   Thêm 2 dòng import ảnh ở đầu `work.ts` và 2 dòng trong bảng `covers`.
+4. Chép một khối `{ slug: "...", ... }` có sẵn trong danh sách `entries`, rồi sửa:
+   - `line`: `"game"` hoặc `"app"`; `asian: true` nếu nhạc cụ Việt dẫn dắt (hiện ở bộ lọc "Asian Signature").
+   - `credit`: `"client"` (dự án thật, credit thật), `"concept"` (concept gốc), `"redesign"` (làm lại âm thanh trên footage của người khác) hoặc `"demo-app"` (app minh họa). **Không ghi concept hay app minh họa là khách hàng thật.**
+   - `packages`: id gói trong `src/data/pricing.ts` (ví dụ `"basic"`, `"indie"`, `"sonic-identity"`); trang demo tự dẫn link tới bảng giá.
+   - `en` và `vi`: `title`, `genre`, `summary` (1–2 câu), `shows` (video thể hiện gì), `hear` (nghe được gì), `creditNote` (ghi danh, quyền footage).
+5. Thứ tự trong `entries` là thứ tự trên trang Work; trang chủ hiện 6 demo đầu. Muốn ẩn một demo thì xóa khối của nó (file video vẫn nằm trên R2).
+6. Sitemap tự cập nhật khi build.
 
 ## 3. Thêm hoặc thay một track nhạc
 
@@ -49,8 +54,8 @@ Audio được xử lý tự động: chuẩn loudness −16 LUFS, true peak ≤
    FFMPEG=<đường dẫn ffmpeg> bun run media -- --upload
    ```
    Script in ra LUFS/true peak từng file và cập nhật `src/content/media-manifest.json`. Nếu file không đạt chuẩn, script dừng và báo lỗi.
-3. Trong `src/data/work.ts`, thay `ph("…")` bằng `audio("lantern-main", "Main theme", ["Đàn tranh", "Strings"])`.
-4. Video Before/After: chép video vào `media-source/video/` (ví dụ `lantern-trailer.mp4`), chạy lệnh ở bước 2. Video được nén H.264, bỏ tiếng, kèm poster. Trong dự án, đặt `beforeAfter: beforeAfter("lantern-trailer", "lantern-before", "lantern-after")`. Hai file audio phải **cùng độ dài với video**.
+3. Dùng id đó ở nơi phát track (ví dụ `audioAsset("lantern-main")` trong `src/content/`).
+4. Video không tiếng cho player Before/After: chép vào `media-source/video/`, chạy lệnh ở bước 2. Video được nén H.264, bỏ tiếng, kèm poster. Hai file audio Before/After phải **cùng độ dài với video**.
 
 Quy tắc audio: không bao giờ tự phát, mỗi lúc chỉ một track, chỉ tải khi người xem bấm play. Các quy tắc này đã có sẵn trong player, không cần cấu hình.
 

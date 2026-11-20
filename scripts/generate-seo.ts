@@ -4,7 +4,7 @@
  * Env: SITE_URL (canonical origin), VITE_APP_ENV ("production" → indexable; anything else → Disallow all).
  */
 import { writeFileSync } from "node:fs";
-import { publishedWork } from "../src/data/work";
+import { workSlugs } from "../src/data/work";
 
 const site = (
   process.env["SITE_URL"] ??
@@ -15,7 +15,7 @@ const production = (process.env["VITE_APP_ENV"] ?? "development") === "productio
 
 /** Locale-neutral paths of every indexable page; /vi mirrors each one. */
 const staticPaths = ["/", "/work", "/services", "/sound-audit", "/free-pack", "/about"];
-const paths = [...staticPaths, ...publishedWork.map((w) => `/work/${w.slug}`)];
+const paths = [...staticPaths, ...workSlugs.map((slug) => `/work/${slug}`)];
 
 const vi = (p: string) => (p === "/" ? "/vi" : `/vi${p}`);
 const today = new Date().toISOString().slice(0, 10);

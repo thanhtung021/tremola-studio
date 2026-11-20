@@ -6,6 +6,7 @@ export type TrackEvent =
   | "audit_form_submit"
   | "pack_signup"
   | "audio_play"
+  | "demo_play"
   | "before_after_toggle"
   | "pricing_view"
   | "cta_click";

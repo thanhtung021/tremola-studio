@@ -1,41 +1,30 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { CaseStudy } from "@/components/work/CaseStudy";
-import { getWork, localizeWork } from "@/data/work";
-import { alternateLinks, originFrom } from "@/i18n";
+import { DemoPage } from "@/components/work/DemoPage";
+import { getWork } from "@/data/work";
+import { originFrom } from "@/i18n";
+import { demoHead } from "@/components/work/demo-head";
+
+const LOCALE = "vi" as const;
 
 export const Route = createFileRoute("/vi/work/$slug")({
   loader: ({ params }) => {
-    const w = getWork(params.slug);
+    const w = getWork(params.slug, LOCALE);
     if (!w) throw notFound();
-    const l = localizeWork(w, "vi");
-    return { slug: w.slug, title: l.title, summary: l.summary };
-  },
-  head: ({ loaderData, matches }) => {
-    const origin = originFrom({ matches });
-    const title = loaderData
-      ? `${loaderData.title} · Tremola Studio`
-      : "Không tìm thấy dự án · Tremola Studio";
-    const description = loaderData?.summary ?? "Không tìm thấy dự án này.";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-        { name: "twitter:card", content: "summary_large_image" },
-        ...(loaderData && origin
-          ? [
-              { property: "og:image", content: `${origin}/og-image.png` },
-              { name: "twitter:image", content: `${origin}/og-image.png` },
-            ]
-          : []),
-        ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
-      ],
-      links: loaderData ? alternateLinks("vi", `/work/${loaderData.slug}`, origin) : [],
+      slug: w.slug,
+      title: w.title,
+      summary: w.summary,
+      cover: w.cover,
+      video: w.video.src,
+      seconds: Math.round(w.video.duration),
     };
   },
-  component: CaseRoute,
+  head: ({ loaderData, matches }) =>
+    demoHead(loaderData, originFrom({ matches }), LOCALE, {
+      title: "Không tìm thấy dự án",
+      description: "Không tìm thấy dự án này.",
+    }),
+  component: DemoRoute,
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Không tìm thấy dự án</h1>
@@ -51,7 +40,7 @@ export const Route = createFileRoute("/vi/work/$slug")({
   ),
 });
 
-function CaseRoute() {
+function DemoRoute() {
   const { slug } = Route.useLoaderData();
-  return <CaseStudy work={localizeWork(getWork(slug)!, "vi")} />;
+  return <DemoPage work={getWork(slug, LOCALE)!} />;
 }

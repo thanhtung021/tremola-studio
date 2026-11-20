@@ -63,7 +63,7 @@ test("language switch goes to the Vietnamese page and back @remote", async ({ pa
 });
 
 test("audio plays on click and only one track plays at a time", async ({ page }) => {
-  await open(page, "/work/lantern-valley");
+  await open(page, "/services");
   const playingTitles = async () =>
     new Set(
       (await page
@@ -85,6 +85,36 @@ test("audio plays on click and only one track plays at a time", async ({ page })
   await page.locator(`button[aria-label="${second}"]`).first().click();
   // The first track stopped: exactly one track (the second) is playing anywhere on the page.
   await expect.poll(playingTitles).toEqual(new Set([second.replace(/^Play /, "")]));
+});
+
+test("portfolio lists the demos and each demo page plays its own language cut @remote", async ({
+  page,
+}) => {
+  await open(page, "/work");
+  const cards = page.locator("main article");
+  await expect(cards).toHaveCount(8);
+  await page.getByRole("button", { name: "Asian Signature" }).click();
+  await expect(cards).toHaveCount(2);
+  await page.getByRole("button", { name: "All" }).click();
+  await page.getByRole("link", { name: /The Hospital/ }).click();
+  await expect(page).toHaveURL(/\/work\/the-hospital$/);
+  const video = page.locator("main video");
+  await expect(video).toHaveAttribute("src", /\/demo\/the-hospital-en\.[0-9a-f]+\.mp4$/);
+  await expect(video).toHaveAttribute("poster", /the-hospital-en/);
+  expect(await video.evaluate((v: HTMLVideoElement) => v.controls && v.preload)).toBe("none");
+  await expect(page.getByRole("link", { name: "Basic Pack" })).toHaveAttribute(
+    "href",
+    /\/services#game$/,
+  );
+
+  await open(page, "/vi/work/the-hospital");
+  await expect(page.locator("main video")).toHaveAttribute("src", /the-hospital-vi\./);
+  await expect(page.locator("h1")).toHaveText("The Hospital");
+  await expect(page.getByText("Bạn sẽ nghe")).toBeVisible();
+
+  // Old placeholder projects are gone.
+  const old = await page.request.get("/work/lantern-valley");
+  expect(old.status()).toBe(404);
 });
 
 test("no audio autoplays and media is not preloaded @remote", async ({ page }) => {
@@ -170,7 +200,7 @@ test("admin requires login @remote", async ({ page }) => {
 const viPages = [
   "/vi",
   "/vi/work",
-  "/vi/work/lantern-valley",
+  "/vi/work/the-hospital",
   "/vi/services",
   "/vi/sound-audit",
   "/vi/free-pack",
@@ -216,7 +246,7 @@ test("Vietnamese pages: diacritics in every font, no heading overflow at 375 px 
 test("scroll-in animations reveal every section (no content stuck invisible) @remote", async ({
   page,
 }) => {
-  for (const url of ["/", "/services", "/about", "/work/lantern-valley"]) {
+  for (const url of ["/", "/services", "/about", "/work/the-hospital"]) {
     await open(page, url);
     const height = await page.evaluate(() => document.body.scrollHeight);
     for (let y = 0; y <= height; y += 400) {

@@ -1,261 +1,353 @@
 /**
- * Portfolio content. Add a project by adding an object below.
- * Only items with status "published" appear on the site. Real numbers only in `results`.
+ * Portfolio: the sales demo reels (Desktop/Tremola/demo/Tremola_Demos). Each demo has an English
+ * and a Vietnamese text version of the same video; /work shows the EN cut, /vi/work the VN cut.
+ * Videos are processed by `scripts/process-audio.mjs` from media-source/demos/<slug>-<en|vi>.mp4.
+ * Copy rules: no prices, never present a concept or demo app as a real client, no "recorded live".
  */
-import calmLedger from "@/assets/work/calm-ledger.jpg";
-import lanternValley from "@/assets/work/lantern-valley.jpg";
-import moonLute from "@/assets/work/moon-lute-duel.jpg";
-import stick from "@/assets/work/stick.jpg";
-import { audioAsset, placeholderMedia, videoAsset } from "@/content/media";
+import echoesOfTheNineMountainsEn from "@/assets/work/echoes-of-the-nine-mountains-en.jpg";
+import echoesOfTheNineMountainsVi from "@/assets/work/echoes-of-the-nine-mountains-vi.jpg";
+import theHospitalEn from "@/assets/work/the-hospital-en.jpg";
+import theHospitalVi from "@/assets/work/the-hospital-vi.jpg";
+import formaWellnessAppEn from "@/assets/work/forma-wellness-app-en.jpg";
+import formaWellnessAppVi from "@/assets/work/forma-wellness-app-vi.jpg";
+import echoesAsianSignatureEn from "@/assets/work/echoes-asian-signature-en.jpg";
+import echoesAsianSignatureVi from "@/assets/work/echoes-asian-signature-vi.jpg";
+import catfluencerEn from "@/assets/work/catfluencer-en.jpg";
+import catfluencerVi from "@/assets/work/catfluencer-vi.jpg";
+import sonicLogosEn from "@/assets/work/sonic-logos-en.jpg";
+import sonicLogosVi from "@/assets/work/sonic-logos-vi.jpg";
+import actionSoundRedesignEn from "@/assets/work/action-sound-redesign-en.jpg";
+import actionSoundRedesignVi from "@/assets/work/action-sound-redesign-vi.jpg";
+import nhipFintechAppEn from "@/assets/work/nhip-fintech-app-en.jpg";
+import nhipFintechAppVi from "@/assets/work/nhip-fintech-app-vi.jpg";
+import { demoAsset } from "@/content/media";
+import type { Locale } from "@/i18n";
 
-export type WorkTrack = {
-  title: string;
-  src: string;
-  srcOpus?: string;
-  duration: string;
-  instruments?: string[];
-  peaks?: number[];
+// Posters: a frame of each cut (1600 px JPG + 800/1600 WebP for srcset, see docs/CONTENT-GUIDE.md).
+const covers: Record<string, string> = {
+  "echoes-of-the-nine-mountains-en": echoesOfTheNineMountainsEn,
+  "echoes-of-the-nine-mountains-vi": echoesOfTheNineMountainsVi,
+  "the-hospital-en": theHospitalEn,
+  "the-hospital-vi": theHospitalVi,
+  "forma-wellness-app-en": formaWellnessAppEn,
+  "forma-wellness-app-vi": formaWellnessAppVi,
+  "echoes-asian-signature-en": echoesAsianSignatureEn,
+  "echoes-asian-signature-vi": echoesAsianSignatureVi,
+  "catfluencer-en": catfluencerEn,
+  "catfluencer-vi": catfluencerVi,
+  "sonic-logos-en": sonicLogosEn,
+  "sonic-logos-vi": sonicLogosVi,
+  "action-sound-redesign-en": actionSoundRedesignEn,
+  "action-sound-redesign-vi": actionSoundRedesignVi,
+  "nhip-fintech-app-en": nhipFintechAppEn,
+  "nhip-fintech-app-vi": nhipFintechAppVi,
 };
-export type Work = {
-  slug: string;
+const cover = (slug: string, locale: Locale) => covers[`${slug}-${locale}`]!;
+
+/** pricing.ts package ids, shown as "Packages that fit". */
+export type PackageId =
+  | "basic"
+  | "indie"
+  | "premium"
+  | "ui-kit"
+  | "sonic-identity"
+  | "brand-suite"
+  | "stinger"
+  | "live-recording";
+
+/** client = real credit · concept = original Tremola concept · redesign = sound on third-party
+ * footage · demo-app = illustrative app built for the demo. */
+export type Credit = "client" | "concept" | "redesign" | "demo-app";
+
+type WorkText = {
   title: string;
-  client?: string;
-  kind: "client" | "concept" | "personal";
-  line: "game" | "app" | "media";
-  tags: string[];
-  year: number;
-  platform?: string;
-  role: string;
-  cover: { type: "image" | "video"; src: string; alt: string };
-  heroTrack?: WorkTrack;
-  beforeAfter?: { video: string; poster?: string; beforeAudio: string; afterAudio: string };
+  genre: string;
   summary: string;
-  challenge: string;
-  direction: string;
-  system: { music?: WorkTrack[]; sfx?: WorkTrack[]; ui?: WorkTrack[] };
-  integration?: string[];
-  results?: { label: string; value: string }[];
-  credits?: string[];
-  status: "draft" | "published";
-  /** Vietnamese text for /vi pages. Missing fields fall back to English. */
-  vi?: Partial<Pick<Work, "title" | "role" | "summary" | "challenge" | "direction" | "tags">>;
+  shows: string;
+  hear: string;
+  creditNote: string;
 };
 
-/** Vietnamese instruments — used for the "Asian Signature" filter and the instrument pills. */
-export const vietnameseInstruments = [
-  "Đàn tranh",
-  "Đàn nguyệt",
-  "Sáo trúc",
-  "T'rưng",
-  "Đàn bầu",
-  "Đàn tỳ bà",
+type WorkEntry = {
+  slug: string;
+  line: "game" | "app";
+  /** Listed under the "Asian Signature" filter (Vietnamese instruments carry the score). */
+  asian?: boolean;
+  credit: Credit;
+  packages: PackageId[];
+  en: WorkText;
+  vi: WorkText;
+};
+
+/** Order = order on /work; the home page shows the first six. */
+const entries: WorkEntry[] = [
+  {
+    slug: "echoes-of-the-nine-mountains",
+    line: "game",
+    asian: true,
+    credit: "concept",
+    packages: ["indie", "premium"],
+    en: {
+      title: "Echoes of the Nine Mountains",
+      genre: "Fantasy RPG",
+      summary:
+        "An original fantasy RPG concept scored as one adaptive system: the music follows the player from the title screen through the town and the inventory to a boss fight.",
+      shows:
+        "Main menu → exploration → town → inventory → combat → boss. On-screen labels name the music state and the SFX layer playing.",
+      hear: "Orchestral and hybrid main theme, state-based adaptive music with Vietnamese instrument colour, menu UI, magic and combat SFX.",
+      creditNote:
+        "Original Tremola concept, not a released game. The gameplay framing was built for this demo.",
+    },
+    vi: {
+      title: "Echoes of the Nine Mountains",
+      genre: "Fantasy / RPG",
+      summary:
+        "Concept RPG fantasy gốc, làm âm thanh như một hệ thống tương tác: nhạc đi theo người chơi từ màn hình chính, thị trấn, túi đồ tới trận boss.",
+      shows:
+        "Menu chính → khám phá → thị trấn → túi đồ → chiến đấu → boss. Nhãn trên hình ghi trạng thái nhạc và lớp SFX đang phát.",
+      hear: "Nhạc chủ đề dàn nhạc & hybrid, nhạc tương tác theo trạng thái, màu nhạc cụ Việt, UI menu, SFX phép thuật & chiến đấu.",
+      creditNote:
+        "Concept gốc của Tremola, không phải game đã phát hành. Khung gameplay được dựng cho demo.",
+    },
+  },
+  {
+    slug: "the-hospital",
+    line: "game",
+    credit: "client",
+    packages: ["basic", "indie"],
+    en: {
+      title: "The Hospital",
+      genre: "Horror",
+      summary:
+        "A horror sequence where sound sets the pace: room tone and a slowly rising drone, then a scare, a chase and a slammed door.",
+      shows:
+        "Dark corridor, flashlight, the creature appears, chase, door slam. On-screen labels name each sound layer.",
+      hear: "Ambience and room tone, a rising drone, adaptive music (explore → confront → chase), a jump-scare stinger, creature SFX and foley.",
+      creditNote:
+        "Sound by Tremola for The Hospital. The gameplay scene was recreated for this demo.",
+    },
+    vi: {
+      title: "The Hospital",
+      genre: "Kinh dị",
+      summary:
+        "Một đoạn chơi kinh dị mà âm thanh dẫn nhịp: room tone, drone căng dần, rồi cú hù, rượt đuổi và cửa đóng sầm.",
+      shows:
+        "Hành lang tối, đèn pin, quái vật xuất hiện, rượt đuổi, cửa đóng sầm. Nhãn trên hình ghi lớp âm thanh.",
+      hear: "Ambience & room tone, drone căng dần, nhạc tương tác (khám phá → đối mặt → rượt đuổi), stinger hù dọa, SFX quái vật & foley.",
+      creditNote: "Âm thanh Tremola làm cho The Hospital. Cảnh gameplay được dựng lại cho demo.",
+    },
+  },
+  {
+    slug: "forma-wellness-app",
+    line: "app",
+    credit: "client",
+    packages: ["sonic-identity", "brand-suite"],
+    en: {
+      title: "Forma",
+      genre: "Fitness app",
+      summary:
+        "A complete sound layer for a real home-workout app, from the sonic logo to every cue in a session and the music inside the app.",
+      shows:
+        "One workout played twice, silent and then with sound: launch, set start, countdown, phase change, form check by camera, session complete, badge, meal photo, stretching.",
+      hear: "Sonic logo, UI sounds, workout cues (set start and end, countdown, rep count, phase change, badge), 128 BPM workout music and 64 BPM stretching music.",
+      creditNote:
+        "Sound by Tremola for Forma, on the app's real screens (Vietnamese interface). Mixed at in-app level, so turn the volume up a little.",
+    },
+    vi: {
+      title: "Forma",
+      genre: "App thể dục",
+      summary:
+        "Trọn bộ âm thanh cho một app tập tại nhà có thật: từ sonic logo tới mọi âm báo trong buổi tập và nhạc trong app.",
+      shows:
+        "Cùng một buổi tập chạy 2 lần, im lặng rồi có âm thanh: mở app, vào hiệp, đếm ngược, đổi pha, chỉnh form qua camera, hoàn thành, huy hiệu, chụp món ăn, giãn cơ.",
+      hear: "Sonic logo, UI sound, âm báo khi tập (vào/hết hiệp, đếm ngược, đếm rep, đổi pha, huy hiệu), nhạc tập 128 BPM và nhạc giãn cơ 64 BPM.",
+      creditNote:
+        "Âm thanh Tremola làm cho app Forma, trên màn hình thật của app. Âm lượng giữ đúng mức trong app nên hơi nhỏ, bạn tăng âm lượng một chút.",
+    },
+  },
+  {
+    slug: "echoes-asian-signature",
+    line: "game",
+    asian: true,
+    credit: "concept",
+    packages: ["indie", "live-recording"],
+    en: {
+      title: "Echoes · Asian Signature",
+      genre: "Asian fantasy / wuxia",
+      summary:
+        "The same adaptive RPG score, told through Vietnamese instruments: Vietnamese zither (đàn tranh), moon lute (đàn nguyệt), bamboo flute (sáo trúc) and bamboo xylophone (T'rưng) carry the identity of every scene.",
+      shows:
+        "The Echoes gameplay, with on-screen notes naming the Vietnamese instrument that carries each scene.",
+      hear: "Vietnamese zither (đàn tranh), moon lute (đàn nguyệt), bamboo flute (sáo trúc), orchestral and hybrid layers, state-based adaptive music.",
+      creditNote:
+        "Original Tremola concept. The Vietnamese instruments in this demo are sampled; recording them live is an add-on.",
+    },
+    vi: {
+      title: "Echoes · Asian Signature",
+      genre: "Fantasy Á Đông / kiếm hiệp",
+      summary:
+        "Cùng bản nhạc RPG tương tác, kể bằng nhạc cụ Việt: đàn tranh, đàn nguyệt, sáo trúc và T'rưng mang bản sắc vào từng cảnh.",
+      shows: "Gameplay Echoes, kèm chú thích nhạc cụ Việt dẫn dắt từng cảnh.",
+      hear: "Đàn tranh, đàn nguyệt, sáo trúc, lớp dàn nhạc & hybrid, nhạc tương tác theo trạng thái.",
+      creditNote:
+        "Concept gốc của Tremola. Nhạc cụ Việt trong demo là sample; thu trực tiếp là dịch vụ thêm.",
+    },
+  },
+  {
+    slug: "catfluencer",
+    line: "game",
+    credit: "client",
+    packages: ["basic", "indie"],
+    en: {
+      title: "Catfluencer",
+      genre: "Cozy / casual puzzle",
+      summary:
+        "Real Catfluencer gameplay with two complete SFX directions on the same scenes, so you can hear how the choice changes the feel.",
+      shows:
+        "Merge board, home and quests, dialogue, rewards and shop, each scene played with SFX set A and set B.",
+      hear: "Warm music loops, soft UI (pick-ups, rewards), character sounds and two SFX directions. Headphones help with the A/B.",
+      creditNote: "Music and SFX by Tremola for Catfluencer.",
+    },
+    vi: {
+      title: "Catfluencer",
+      genre: "Cozy / casual puzzle",
+      summary:
+        "Gameplay thật của Catfluencer, cùng cảnh nghe 2 hướng SFX trọn bộ để thấy lựa chọn đổi cảm giác game thế nào.",
+      shows:
+        "Bàn merge, nhà & nhiệm vụ, hội thoại, phần thưởng & cửa hàng; mỗi cảnh nghe bộ SFX A và B.",
+      hear: "Loop nhạc ấm, UI mềm (nhặt đồ, phần thưởng), âm thanh nhân vật, 2 hướng SFX. Nên nghe bằng tai nghe để so A/B.",
+      creditNote: "Nhạc & SFX Tremola làm cho Catfluencer.",
+    },
+  },
+  {
+    slug: "sonic-logos",
+    line: "app",
+    credit: "client",
+    packages: ["sonic-identity", "stinger"],
+    en: {
+      title: "Sonic Logos",
+      genre: "Sonic branding",
+      summary:
+        "Four brands, one method: each gets a sonic logo, a short logo and four UI sounds that grow from the same musical idea.",
+      shows:
+        "Stick, Forma, Logline and Musician: sonic logo, short logo and UI sounds, with waveforms and the idea behind each.",
+      hear: "24 sounds: full sonic logos, short logos and success, notification, gentle error and tap UI sounds, at delivered levels.",
+      creditNote: "Sonic logos and UI sounds by Tremola for Stick, Forma, Logline and Musician.",
+    },
+    vi: {
+      title: "Sonic Logo",
+      genre: "Nhận diện âm thanh",
+      summary:
+        "4 thương hiệu, một cách làm: mỗi thương hiệu có sonic logo, logo ngắn và 4 UI sound cùng xuất phát từ một ý nhạc.",
+      shows:
+        "Stick, Forma, Logline và Musician: sonic logo, logo ngắn và UI sound, kèm dạng sóng và ý tưởng của từng âm.",
+      hear: "24 âm: sonic logo đầy đủ, logo ngắn, UI thành công / thông báo / lỗi nhẹ / chạm, giữ nguyên mức đã giao.",
+      creditNote: "Sonic logo & UI sound Tremola làm cho Stick, Forma, Logline, Musician.",
+    },
+  },
+  {
+    slug: "action-sound-redesign",
+    line: "game",
+    credit: "redesign",
+    packages: ["basic", "premium"],
+    en: {
+      title: "Action · Sound Redesign",
+      genre: "Action",
+      summary:
+        "One gameplay clip played three times: no audio, adaptive SFX only, then SFX with music that follows the fight.",
+      shows:
+        "The same sequence in three passes: silent → adaptive SFX → SFX and music moving from exploration to combat, boss and victory.",
+      hear: "Hit, skill and environment SFX; music that moves exploration → combat → boss → victory.",
+      creditNote:
+        "Sound redesign made for this portfolio. Footage © Sony Interactive Entertainment (God of War); not affiliated with or endorsed by Sony.",
+    },
+    vi: {
+      title: "Action · Sound Redesign",
+      genre: "Hành động",
+      summary:
+        "Một đoạn gameplay chạy 3 lượt: không âm thanh, chỉ SFX tương tác, rồi SFX cùng nhạc bám theo trận đánh.",
+      shows:
+        "Cùng một đoạn chơi 3 lượt: im lặng → SFX tương tác → SFX và nhạc chuyển từ khám phá sang chiến đấu, boss và chiến thắng.",
+      hear: "SFX đòn đánh, kỹ năng, môi trường; nhạc chuyển trạng thái khám phá → chiến đấu → boss → chiến thắng.",
+      creditNote:
+        "Sound redesign làm cho portfolio. Footage © Sony Interactive Entertainment (God of War), không liên kết hay được Sony bảo trợ.",
+    },
+  },
+  {
+    slug: "nhip-fintech-app",
+    line: "app",
+    credit: "demo-app",
+    packages: ["ui-kit", "sonic-identity"],
+    en: {
+      title: "Nhịp · Fintech app",
+      genre: "Fintech",
+      summary:
+        "A money transfer played twice, silent and then with sound, to show how audio makes a finance app feel trustworthy and recognisable.",
+      shows: "Open the app, enter an amount, face verification, transfer sent, money received.",
+      hear: "Sonic logo on launch, taps, keypad, slide to confirm, verification success, transfer success and the incoming-money notification.",
+      creditNote: "Nhịp is an illustrative app built by Tremola for this demo, not a real product.",
+    },
+    vi: {
+      title: "Nhịp · App tài chính",
+      genre: "Fintech",
+      summary:
+        "Một luồng chuyển tiền chạy 2 lần, im lặng rồi có âm thanh, cho thấy âm thanh giúp app tài chính đáng tin và dễ nhận ra.",
+      shows: "Mở app, nhập số tiền, xác thực khuôn mặt, chuyển thành công, nhận tiền.",
+      hear: "Sonic logo mở app, chạm UI, bàn phím, trượt xác nhận, xác thực thành công, giao dịch thành công, thông báo nhận tiền.",
+      creditNote: "Nhịp là app minh họa do Tremola dựng cho demo, không phải sản phẩm có thật.",
+    },
+  },
 ];
 
-const ph = (title: string, instruments?: string[]): WorkTrack => {
-  const a = audioAsset("placeholder-after");
+export type Work = WorkText & {
+  slug: string;
+  line: "game" | "app";
+  asian: boolean;
+  credit: Credit;
+  packages: PackageId[];
+  video: { src: string; duration: number; durationLabel: string };
+  cover: string;
+};
+
+/** A demo in the page language: Vietnamese text and the VN-text cut of the video on /vi. */
+export function localizeWork(e: WorkEntry, locale: Locale): Work {
+  const v = demoAsset(`${e.slug}-${locale}`);
   return {
-    title: `${title} (Placeholder)`,
-    src: a.src,
-    ...(a.srcOpus ? { srcOpus: a.srcOpus } : {}),
-    duration: a.durationLabel,
-    ...(a.peaks ? { peaks: a.peaks } : {}),
-    ...(instruments ? { instruments } : {}),
+    ...e[locale],
+    slug: e.slug,
+    line: e.line,
+    asian: !!e.asian,
+    credit: e.credit,
+    packages: e.packages,
+    video: v,
+    cover: cover(e.slug, locale),
   };
+}
+
+export const workSlugs = entries.map((e) => e.slug);
+export const getWorkEntry = (slug: string) => entries.find((e) => e.slug === slug);
+export const getWork = (slug: string, locale: Locale) => {
+  const e = getWorkEntry(slug);
+  return e ? localizeWork(e, locale) : undefined;
 };
-/**
- * A real track processed by scripts/process-audio.mjs. `id` = the master file name without extension
- * in media-source/audio/ (e.g. "lantern-main" for lantern-main.wav). See docs/CONTENT-GUIDE.md.
- */
-export const audio = (id: string, title: string, instruments?: string[]): WorkTrack => {
-  const a = audioAsset(id);
-  return {
-    title,
-    src: a.src,
-    ...(a.srcOpus ? { srcOpus: a.srcOpus } : {}),
-    duration: a.durationLabel,
-    ...(a.peaks ? { peaks: a.peaks } : {}),
-    ...(instruments ? { instruments } : {}),
-  };
+export const listWork = (locale: Locale) => entries.map((e) => localizeWork(e, locale));
+
+export const lineLabels: Record<Locale, Record<Work["line"], string>> = {
+  en: { game: "Game Audio", app: "Product & App Sound" },
+  vi: { game: "Game Audio", app: "Product & App Sound" },
 };
 
-/** Before/After from processed media ids (video + two audio masters of the same length). */
-export const beforeAfter = (videoId: string, beforeId: string, afterId: string) => {
-  const v = videoAsset(videoId);
-  return {
-    video: v.src,
-    poster: v.poster,
-    beforeAudio: audioAsset(beforeId).src,
-    afterAudio: audioAsset(afterId).src,
-  };
-};
-
-const phBeforeAfter = {
-  video: placeholderMedia.video,
-  poster: placeholderMedia.poster,
-  beforeAudio: placeholderMedia.before,
-  afterAudio: placeholderMedia.after,
-};
-
-const work: Work[] = [
-  {
-    slug: "stick-english-learning-app",
-    title: "Stick — English learning app",
-    kind: "personal",
-    line: "app",
-    tags: ["UI sound", "Sonic logo", "Sound guideline"],
-    year: 2026,
-    platform: "iOS · Android",
-    role: "Sonic logo, UI sound kit, sound guideline",
-    cover: {
-      type: "image",
-      src: stick,
-      alt: "Placeholder cover: a bamboo stick between golden sound waves",
-    },
-    heroTrack: ph("Stick sonic logo"),
-    summary:
-      "A full sound identity for Stick, a Vietnamese English-learning app: sonic logo, UI sound kit and a guideline the dev team ships from.",
-    challenge: "Placeholder — the challenge for Stick.",
-    direction: "Placeholder — motif, instruments and palette for Stick.",
-    system: {
-      ui: [ph("Correct answer"), ph("Streak kept"), ph("Lesson complete")],
-      music: [ph("Sonic logo")],
-    },
-    integration: ["iOS", "Android"],
-    credits: ["Placeholder credit"],
-    vi: {
-      title: "Stick — ứng dụng học tiếng Anh",
-      role: "Sonic logo, UI sound kit, sound guideline",
-      summary:
-        "Bộ nhận diện âm thanh trọn vẹn cho Stick, ứng dụng học tiếng Anh của Việt Nam: sonic logo, UI sound kit và guideline để đội dev triển khai.",
-      challenge: "Placeholder — thách thức của Stick.",
-      direction: "Placeholder — motif, nhạc cụ và bảng âm sắc cho Stick.",
-    },
-    status: "published",
+export const creditLabels: Record<Locale, Record<Credit, string>> = {
+  en: {
+    client: "Real project",
+    concept: "Original concept",
+    redesign: "Sound redesign",
+    "demo-app": "Demo app",
   },
-  {
-    slug: "lantern-valley",
-    title: "Lantern Valley — cozy RPG main theme",
-    kind: "concept",
-    line: "game",
-    tags: ["Main theme", "Adaptive music", "Đàn tranh"],
-    year: 2026,
-    platform: "PC · Switch",
-    role: "Music",
-    cover: {
-      type: "image",
-      src: lanternValley,
-      alt: "Placeholder cover: a lantern-lit valley at night",
-    },
-    heroTrack: ph("Lantern Valley main theme", ["Đàn tranh", "Strings"]),
-    beforeAfter: phBeforeAfter,
-    summary: "Placeholder — a warm main theme for a cozy RPG, carried by đàn tranh and strings.",
-    challenge: "Placeholder — the challenge for Lantern Valley.",
-    direction: "Placeholder — motif and palette. Instruments: Đàn tranh, Strings.",
-    system: {
-      music: [ph("Main theme", ["Đàn tranh", "Strings"]), ph("Village at dusk")],
-      sfx: [ph("Lantern lit")],
-    },
-    integration: ["FMOD", "Unity"],
-    vi: {
-      title: "Lantern Valley — nhạc chủ đề cho game RPG cozy",
-      role: "Âm nhạc",
-      tags: ["Nhạc chủ đề", "Nhạc adaptive", "Đàn tranh"],
-      summary:
-        "Placeholder — nhạc chủ đề ấm áp cho một game RPG cozy, dẫn dắt bởi đàn tranh và dàn dây.",
-      challenge: "Placeholder — thách thức của Lantern Valley.",
-      direction: "Placeholder — motif và bảng âm sắc. Nhạc cụ: đàn tranh, dàn dây.",
-    },
-    status: "published",
+  vi: {
+    client: "Dự án thật",
+    concept: "Concept gốc",
+    redesign: "Sound redesign",
+    "demo-app": "App minh họa",
   },
-  {
-    slug: "moon-lute-duel",
-    title: "Moon Lute Duel — adaptive boss music",
-    kind: "concept",
-    line: "game",
-    tags: ["Adaptive music", "Đàn nguyệt", "Percussion"],
-    year: 2026,
-    platform: "PC",
-    role: "Adaptive music, SFX",
-    cover: {
-      type: "image",
-      src: moonLute,
-      alt: "Placeholder cover: a moon lute under a crescent moon",
-    },
-    heroTrack: ph("Moon Lute Duel, full intensity", ["Đàn nguyệt", "Percussion"]),
-    beforeAfter: phBeforeAfter,
-    summary: "Placeholder — boss music in three intensity layers, led by the đàn nguyệt.",
-    challenge: "Placeholder — the challenge for Moon Lute Duel.",
-    direction:
-      "Placeholder — motif and palette. Instruments: Đàn nguyệt, Percussion. 3 intensity layers.",
-    system: {
-      music: [ph("Layer 1 · Calm"), ph("Layer 2 · Tension"), ph("Layer 3 · Full duel")],
-      sfx: [ph("Lute strike"), ph("Phase change")],
-    },
-    integration: ["Wwise", "Unreal"],
-    vi: {
-      title: "Moon Lute Duel — nhạc boss adaptive",
-      role: "Nhạc adaptive, SFX",
-      tags: ["Nhạc adaptive", "Đàn nguyệt", "Bộ gõ"],
-      summary: "Placeholder — nhạc trận boss với ba lớp cường độ, dẫn dắt bởi đàn nguyệt.",
-      challenge: "Placeholder — thách thức của Moon Lute Duel.",
-      direction: "Placeholder — motif và bảng âm sắc. Nhạc cụ: đàn nguyệt, bộ gõ. 3 lớp cường độ.",
-    },
-    status: "published",
-  },
-  {
-    slug: "calm-ledger",
-    title: "Calm Ledger — fintech UI sound kit",
-    kind: "concept",
-    line: "app",
-    tags: ["UI sound", "Sonic logo"],
-    year: 2026,
-    platform: "iOS · Android · Web",
-    role: "Sonic logo, UI sound",
-    cover: { type: "image", src: calmLedger, alt: "Placeholder cover: soft gold interface shapes" },
-    heroTrack: ph("Calm Ledger sonic logo"),
-    summary: "Placeholder — a calm UI sound kit and sonic logo for a fintech app.",
-    challenge: "Placeholder — the challenge for Calm Ledger.",
-    direction: "Placeholder — motif, instruments and palette for Calm Ledger.",
-    system: {
-      ui: [ph("Payment sent"), ph("Balance updated"), ph("Error, gentle")],
-      music: [ph("Sonic logo")],
-    },
-    integration: ["iOS", "Android"],
-    vi: {
-      title: "Calm Ledger — UI sound kit cho ứng dụng fintech",
-      summary: "Placeholder — UI sound kit và sonic logo nhẹ nhàng cho một ứng dụng fintech.",
-      challenge: "Placeholder — thách thức của Calm Ledger.",
-      direction: "Placeholder — motif, nhạc cụ và bảng âm sắc cho Calm Ledger.",
-    },
-    status: "published",
-  },
-];
-
-export const publishedWork = work.filter((w) => w.status === "published");
-export const getWork = (slug: string) => publishedWork.find((w) => w.slug === slug);
-
-export const isAsianSignature = (w: Work) =>
-  w.tags.some((t) => vietnameseInstruments.includes(t)) ||
-  Object.values(w.system).some((ts) =>
-    ts?.some((t) => t.instruments?.some((i) => vietnameseInstruments.includes(i))),
-  );
-
-export const lineLabels: Record<Work["line"], string> = {
-  game: "Game Audio",
-  app: "Product & App Sound",
-  media: "Media",
 };
-export const kindBadge = (w: Work, locale: "en" | "vi" = "en") =>
-  w.kind === "concept"
-    ? locale === "vi"
-      ? "Original concept · Ý tưởng gốc"
-      : "Original concept"
-    : w.kind === "personal"
-      ? locale === "vi"
-        ? "Dự án của studio"
-        : "Studio project"
-      : null;
-
-/** Work text in the page language (Vietnamese falls back to English per field). */
-export const localizeWork = (w: Work, locale: "en" | "vi"): Work =>
-  locale === "vi" && w.vi ? { ...w, ...w.vi } : w;

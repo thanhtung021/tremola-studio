@@ -1,41 +1,30 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { CaseStudy } from "@/components/work/CaseStudy";
-import { getWork, localizeWork } from "@/data/work";
-import { alternateLinks, originFrom } from "@/i18n";
+import { DemoPage } from "@/components/work/DemoPage";
+import { getWork } from "@/data/work";
+import { originFrom } from "@/i18n";
+import { demoHead } from "@/components/work/demo-head";
+
+const LOCALE = "en" as const;
 
 export const Route = createFileRoute("/work/$slug")({
   loader: ({ params }) => {
-    const w = getWork(params.slug);
+    const w = getWork(params.slug, LOCALE);
     if (!w) throw notFound();
-    const l = localizeWork(w, "en");
-    return { slug: w.slug, title: l.title, summary: l.summary };
-  },
-  head: ({ loaderData, matches }) => {
-    const origin = originFrom({ matches });
-    const title = loaderData
-      ? `${loaderData.title} · Tremola Studio`
-      : "Project not found · Tremola Studio";
-    const description = loaderData?.summary ?? "This project could not be found.";
     return {
-      meta: [
-        { title },
-        { name: "description", content: description },
-        { property: "og:title", content: title },
-        { property: "og:description", content: description },
-        { property: "og:type", content: "article" },
-        { name: "twitter:card", content: "summary_large_image" },
-        ...(loaderData && origin
-          ? [
-              { property: "og:image", content: `${origin}/og-image.png` },
-              { name: "twitter:image", content: `${origin}/og-image.png` },
-            ]
-          : []),
-        ...(loaderData ? [] : [{ name: "robots", content: "noindex" }]),
-      ],
-      links: loaderData ? alternateLinks("en", `/work/${loaderData.slug}`, origin) : [],
+      slug: w.slug,
+      title: w.title,
+      summary: w.summary,
+      cover: w.cover,
+      video: w.video.src,
+      seconds: Math.round(w.video.duration),
     };
   },
-  component: CaseRoute,
+  head: ({ loaderData, matches }) =>
+    demoHead(loaderData, originFrom({ matches }), LOCALE, {
+      title: "Project not found",
+      description: "This project could not be found.",
+    }),
+  component: DemoRoute,
   notFoundComponent: () => (
     <div className="container-site pb-32 pt-40">
       <h1>Project not found</h1>
@@ -51,7 +40,7 @@ export const Route = createFileRoute("/work/$slug")({
   ),
 });
 
-function CaseRoute() {
+function DemoRoute() {
   const { slug } = Route.useLoaderData();
-  return <CaseStudy work={localizeWork(getWork(slug)!, "en")} />;
+  return <DemoPage work={getWork(slug, LOCALE)!} />;
 }

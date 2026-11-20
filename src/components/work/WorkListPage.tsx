@@ -1,22 +1,13 @@
-import { LayoutGroup, m, useReducedMotion } from "framer-motion";
 import { Reveal } from "@/components/brand/Reveal";
-import { isAsianSignature, publishedWork } from "@/data/work";
-import { ease } from "@/lib/motion";
+import { listWork } from "@/data/work";
 import { cn } from "@/lib/utils";
 import { WorkCard } from "./WorkCard";
 import { useLocale } from "@/i18n";
 
-export const workFilters = [
-  { key: "all", label: "All" },
-  { key: "game", label: "Game Audio" },
-  { key: "app", label: "Product & App Sound" },
-  { key: "media", label: "Media" },
-  { key: "asian", label: "Asian Signature" },
-] as const;
-export type WorkFilter = (typeof workFilters)[number]["key"];
+export const workFilters = ["all", "game", "app", "asian"] as const;
+export type WorkFilter = (typeof workFilters)[number];
 
-export const normaliseFilter = (v: string): WorkFilter =>
-  workFilters.find((f) => f.key === v)?.key ?? "all";
+export const normaliseFilter = (v: string): WorkFilter => workFilters.find((f) => f === v) ?? "all";
 
 export function WorkListPage({
   line,
@@ -25,10 +16,9 @@ export function WorkListPage({
   line: WorkFilter;
   setLine: (l: WorkFilter) => void;
 }) {
-  const reduce = useReducedMotion();
-  const { t } = useLocale();
-  const items = publishedWork.filter((w) =>
-    line === "all" ? true : line === "asian" ? isAsianSignature(w) : w.line === line,
+  const { locale, t } = useLocale();
+  const items = listWork(locale).filter((w) =>
+    line === "all" ? true : line === "asian" ? w.asian : w.line === line,
   );
   return (
     <div className="container-site pb-32 pt-40">
@@ -39,18 +29,18 @@ export function WorkListPage({
       <div role="group" aria-label={t.work.filterLabel} className="mt-12 flex flex-wrap gap-2">
         {workFilters.map((f) => (
           <button
-            key={f.key}
+            key={f}
             type="button"
-            aria-pressed={line === f.key}
-            onClick={() => setLine(f.key)}
+            aria-pressed={line === f}
+            onClick={() => setLine(f)}
             className={cn(
               "cursor-pointer rounded-full border px-4 py-2 text-small transition-colors duration-250",
-              line === f.key
+              line === f
                 ? "border-muted-foreground bg-raised text-body"
                 : "border-hairline text-body hover:border-muted-foreground hover:text-body",
             )}
           >
-            {t.work.filters[f.key]}
+            {t.work.filters[f]}
           </button>
         ))}
       </div>
@@ -67,22 +57,14 @@ export function WorkListPage({
           </button>
         </div>
       ) : (
-        <LayoutGroup>
-          <m.ul layout className="mt-12 grid gap-6 md:grid-cols-2">
-            {items.map((w, i) => (
-              <m.li
-                key={w.slug}
-                layout={!reduce}
-                // Fade-in runs in CSS (.reveal-fade) so the first cover paints before hydration.
-                initial={false}
-                transition={{ duration: reduce ? 0.2 : 0.6, ease }}
-                className={i === 0 ? "reveal-fade md:col-span-2" : "reveal-fade"}
-              >
-                <WorkCard work={w} featured={i === 0} priority={i === 0} headingLevel={2} />
-              </m.li>
-            ))}
-          </m.ul>
-        </LayoutGroup>
+        <ul className="mt-12 grid gap-6 md:grid-cols-2">
+          {items.map((w, i) => (
+            // Fade-in runs in CSS (.reveal-fade) so the first covers paint before hydration.
+            <li key={w.slug} className="reveal-fade">
+              <WorkCard work={w} priority={i < 2} headingLevel={2} />
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

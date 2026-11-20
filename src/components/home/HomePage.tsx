@@ -16,7 +16,7 @@ import { WorkCard } from "@/components/work/WorkCard";
 import { useFounding } from "@/hooks/use-founding";
 import { homeContent, type HomeContent } from "@/content/home";
 import { placeholderMedia } from "@/content/media";
-import { publishedWork } from "@/data/work";
+import { listWork } from "@/data/work";
 import type { Locale } from "@/i18n";
 import { revealClass, useReveal } from "@/lib/use-reveal";
 import { useAmbientPause } from "@/hooks/use-ambient-pause";
@@ -47,7 +47,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <Divider />
       <Services {...p} />
       <Divider />
-      <SelectedWork {...p} />
+      <SelectedWork {...p} locale={locale} />
       <Divider />
       <AsianSignature {...p} />
       <Divider />
@@ -175,8 +175,8 @@ function Services({ c, r }: P) {
   );
 }
 
-function SelectedWork({ c, r }: P) {
-  const latest = [...publishedWork].sort((x, y) => y.year - x.year).slice(0, 6);
+function SelectedWork({ c, r, locale }: P & { locale: Locale }) {
+  const latest = listWork(locale).slice(0, 6);
   return (
     <Reveal as="section" className="section container-site">
       <div className="mb-12 flex flex-wrap items-end justify-between gap-6">
@@ -187,7 +187,7 @@ function SelectedWork({ c, r }: P) {
       </div>
       <div className="grid gap-6 md:grid-cols-3">
         {latest.map((w) => (
-          <WorkCard key={w.slug} work={w} />
+          <WorkCard key={w.slug} work={w} sizes="(min-width: 768px) 33vw, 100vw" />
         ))}
       </div>
     </Reveal>

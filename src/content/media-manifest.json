@@ -4,11 +4,7 @@
       "mp3": "audio/placeholder-after.0fa7aa9756.mp3",
       "opus": "audio/placeholder-after.0fa7aa9756.webm",
       "peaksPath": "audio/placeholder-after.0fa7aa9756.peaks.json",
-      "peaks": [
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-        1, 1
-      ],
+      "peaks": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
       "duration": 24,
       "durationLabel": "0:24",
       "lufs": -16.3,
@@ -19,12 +15,7 @@
       "mp3": "audio/placeholder-before.084c85c335.mp3",
       "opus": "audio/placeholder-before.084c85c335.webm",
       "peaksPath": "audio/placeholder-before.084c85c335.peaks.json",
-      "peaks": [
-        1, 1, 1, 1, 1, 1, 1, 1, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99,
-        0.99, 0.99, 0.99, 0.99, 1, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99,
-        0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99,
-        0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99
-      ],
+      "peaks": [1, 1, 1, 1, 1, 1, 1, 1, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 1, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99, 0.99],
       "duration": 24,
       "durationLabel": "0:24",
       "lufs": -16.2,
@@ -43,5 +34,135 @@
       "source": "placeholder-video.mp4"
     }
   },
-  "generatedAt": "2026-11-14T09:25:17.120Z"
+  "generatedAt": "2026-11-20T17:38:47.164Z",
+  "demo": {
+    "action-sound-redesign-en": {
+      "mp4": "demo/action-sound-redesign-en.0cb252dc46.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 140.64,
+      "durationLabel": "2:21",
+      "source": "action-sound-redesign-en.mp4"
+    },
+    "action-sound-redesign-vi": {
+      "mp4": "demo/action-sound-redesign-vi.f8e6a97a9d.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 140.64,
+      "durationLabel": "2:21",
+      "source": "action-sound-redesign-vi.mp4"
+    },
+    "catfluencer-en": {
+      "mp4": "demo/catfluencer-en.84b68366ff.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 77,
+      "durationLabel": "1:17",
+      "source": "catfluencer-en.mp4"
+    },
+    "catfluencer-vi": {
+      "mp4": "demo/catfluencer-vi.6c80e35adb.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 77,
+      "durationLabel": "1:17",
+      "source": "catfluencer-vi.mp4"
+    },
+    "echoes-asian-signature-en": {
+      "mp4": "demo/echoes-asian-signature-en.496ea683cb.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 63.02,
+      "durationLabel": "1:03",
+      "source": "echoes-asian-signature-en.mp4"
+    },
+    "echoes-asian-signature-vi": {
+      "mp4": "demo/echoes-asian-signature-vi.310cdfe216.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 63.02,
+      "durationLabel": "1:03",
+      "source": "echoes-asian-signature-vi.mp4"
+    },
+    "echoes-of-the-nine-mountains-en": {
+      "mp4": "demo/echoes-of-the-nine-mountains-en.4220e965fb.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 63.02,
+      "durationLabel": "1:03",
+      "source": "echoes-of-the-nine-mountains-en.mp4"
+    },
+    "echoes-of-the-nine-mountains-vi": {
+      "mp4": "demo/echoes-of-the-nine-mountains-vi.a8cd9f14e2.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 63.02,
+      "durationLabel": "1:03",
+      "source": "echoes-of-the-nine-mountains-vi.mp4"
+    },
+    "forma-wellness-app-en": {
+      "mp4": "demo/forma-wellness-app-en.2ba04d2eee.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 67.2,
+      "durationLabel": "1:07",
+      "source": "forma-wellness-app-en.mp4"
+    },
+    "forma-wellness-app-vi": {
+      "mp4": "demo/forma-wellness-app-vi.2298d96232.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 67.2,
+      "durationLabel": "1:07",
+      "source": "forma-wellness-app-vi.mp4"
+    },
+    "nhip-fintech-app-en": {
+      "mp4": "demo/nhip-fintech-app-en.5e5b35cdfc.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 44.5,
+      "durationLabel": "0:45",
+      "source": "nhip-fintech-app-en.mp4"
+    },
+    "nhip-fintech-app-vi": {
+      "mp4": "demo/nhip-fintech-app-vi.7992067120.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 44.5,
+      "durationLabel": "0:45",
+      "source": "nhip-fintech-app-vi.mp4"
+    },
+    "sonic-logos-en": {
+      "mp4": "demo/sonic-logos-en.1d5b4de2be.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 71.4,
+      "durationLabel": "1:11",
+      "source": "sonic-logos-en.mp4"
+    },
+    "sonic-logos-vi": {
+      "mp4": "demo/sonic-logos-vi.658779b32b.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 71.4,
+      "durationLabel": "1:11",
+      "source": "sonic-logos-vi.mp4"
+    },
+    "the-hospital-en": {
+      "mp4": "demo/the-hospital-en.1bd6f7b822.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 74.53999999999999,
+      "durationLabel": "1:15",
+      "source": "the-hospital-en.mp4"
+    },
+    "the-hospital-vi": {
+      "mp4": "demo/the-hospital-vi.050e52bc7e.mp4",
+      "width": 1920,
+      "height": 1080,
+      "duration": 74.53999999999999,
+      "durationLabel": "1:15",
+      "source": "the-hospital-vi.mp4"
+    }
+  }
 }
