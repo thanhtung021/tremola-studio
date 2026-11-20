@@ -85,29 +85,27 @@ const entries: WorkEntry[] = [
     slug: "echoes-of-the-nine-mountains",
     line: "game",
     asian: true,
-    credit: "concept",
+    credit: "client",
     packages: ["indie", "premium"],
     en: {
       title: "Echoes of the Nine Mountains",
       genre: "Fantasy RPG",
       summary:
-        "An original fantasy RPG concept scored as one adaptive system: the music follows the player from the title screen through the town and the inventory to a boss fight.",
+        "A fantasy RPG scored as one adaptive system: the music follows the player from the title screen through the town and the inventory to a boss fight.",
       shows:
         "Main menu → exploration → town → inventory → combat → boss. On-screen labels name the music state and the SFX layer playing.",
       hear: "Orchestral and hybrid main theme, state-based adaptive music with Vietnamese instrument colour, menu UI, magic and combat SFX.",
-      creditNote:
-        "Original Tremola concept, not a released game. The gameplay framing was built for this demo.",
+      creditNote: "Music and sound by Tremola for Echoes of the Nine Mountains.",
     },
     vi: {
       title: "Echoes of the Nine Mountains",
       genre: "Fantasy / RPG",
       summary:
-        "Concept RPG fantasy gốc, làm âm thanh như một hệ thống tương tác: nhạc đi theo người chơi từ màn hình chính, thị trấn, túi đồ tới trận boss.",
+        "Game RPG fantasy, làm âm thanh như một hệ thống tương tác: nhạc đi theo người chơi từ màn hình chính, thị trấn, túi đồ tới trận boss.",
       shows:
         "Menu chính → khám phá → thị trấn → túi đồ → chiến đấu → boss. Nhãn trên hình ghi trạng thái nhạc và lớp SFX đang phát.",
       hear: "Nhạc chủ đề dàn nhạc & hybrid, nhạc tương tác theo trạng thái, màu nhạc cụ Việt, UI menu, SFX phép thuật & chiến đấu.",
-      creditNote:
-        "Concept gốc của Tremola, không phải game đã phát hành. Khung gameplay được dựng cho demo.",
+      creditNote: "Nhạc & âm thanh Tremola làm cho Echoes of the Nine Mountains.",
     },
   },
   {
@@ -169,7 +167,7 @@ const entries: WorkEntry[] = [
     slug: "echoes-asian-signature",
     line: "game",
     asian: true,
-    credit: "concept",
+    credit: "client",
     packages: ["indie", "live-recording"],
     en: {
       title: "Echoes · Asian Signature",
@@ -180,7 +178,7 @@ const entries: WorkEntry[] = [
         "The Echoes gameplay, with on-screen notes naming the Vietnamese instrument that carries each scene.",
       hear: "Vietnamese zither (đàn tranh), moon lute (đàn nguyệt), bamboo flute (sáo trúc), orchestral and hybrid layers, state-based adaptive music.",
       creditNote:
-        "Original Tremola concept. The Vietnamese instruments in this demo are sampled; recording them live is an add-on.",
+        "Music and sound by Tremola for Echoes of the Nine Mountains. The Vietnamese instruments in this demo are sampled; recording them live is an add-on.",
     },
     vi: {
       title: "Echoes · Asian Signature",
@@ -190,7 +188,7 @@ const entries: WorkEntry[] = [
       shows: "Gameplay Echoes, kèm chú thích nhạc cụ Việt dẫn dắt từng cảnh.",
       hear: "Đàn tranh, đàn nguyệt, sáo trúc, lớp dàn nhạc & hybrid, nhạc tương tác theo trạng thái.",
       creditNote:
-        "Concept gốc của Tremola. Nhạc cụ Việt trong demo là sample; thu trực tiếp là dịch vụ thêm.",
+        "Nhạc & âm thanh Tremola làm cho Echoes of the Nine Mountains. Nhạc cụ Việt trong demo là sample; thu trực tiếp là dịch vụ thêm.",
     },
   },
   {
