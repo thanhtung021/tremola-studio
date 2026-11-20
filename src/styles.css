@@ -37,6 +37,51 @@
     animation: tremola-reveal-fade 0.2s ease both;
   }
 }
+/* Scroll-in reveal (useReveal): same motion as fadeUp, no JavaScript animation bundle needed. */
+.reveal-hidden {
+  opacity: 0;
+  transform: translateY(16px);
+}
+.reveal-in {
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+/* "How we work" timeline: gold line draws in, steps follow with a stagger (--reveal-delay). */
+.reveal-hidden .reveal-line {
+  transform: scale(0);
+}
+.reveal-hidden .reveal-step {
+  opacity: 0;
+  transform: translateY(12px);
+}
+.reveal-in .reveal-line {
+  transition: transform 1.4s cubic-bezier(0.22, 1, 0.36, 1) 0.3s;
+}
+.reveal-in .reveal-step {
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s),
+    transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0s);
+}
+.reveal-group.reveal-hidden {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .reveal-hidden,
+  .reveal-hidden .reveal-step {
+    transform: none;
+  }
+  .reveal-hidden .reveal-line {
+    transform: none;
+    opacity: 0;
+  }
+  .reveal-in,
+  .reveal-in .reveal-line,
+  .reveal-in .reveal-step {
+    transition: opacity 0.2s ease;
+  }
+}
 
 /* Tremola Studio design system — palette must match the official logo exactly. */
 

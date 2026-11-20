@@ -2,8 +2,7 @@ import { ArrowRight } from "lucide-react";
 import { instrumentImages } from "@/content/instrument-images";
 import { responsiveImage } from "@/lib/utils";
 import { Link } from "@tanstack/react-router";
-import { m, useReducedMotion } from "framer-motion";
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState, type CSSProperties, type ReactNode } from "react";
 import { AudioPlayer } from "@/components/audio/AudioPlayer";
 import { useAudio } from "@/components/audio/AudioProvider";
 import { BeforeAfterPlayer } from "@/components/audio/BeforeAfterPlayer";
@@ -19,7 +18,7 @@ import { homeContent, type HomeContent } from "@/content/home";
 import { placeholderMedia } from "@/content/media";
 import { publishedWork } from "@/data/work";
 import type { Locale } from "@/i18n";
-import { ease } from "@/lib/motion";
+import { revealClass, useReveal } from "@/lib/use-reveal";
 import { useAmbientPause } from "@/hooks/use-ambient-pause";
 import { ContactForm } from "@/components/forms/ContactForm";
 import { contactCopy } from "@/content/contact";
@@ -273,44 +272,25 @@ function WhyTremola({ c }: P) {
 }
 
 function HowWeWork({ c }: P) {
-  const reduce = useReducedMotion();
+  const [ref, state] = useReveal<HTMLOListElement>(0.3);
   return (
     <section className="section container-site">
       <Reveal>
         <h2 className="mb-16">{c.howTitle}</h2>
       </Reveal>
-      <m.ol
-        className="relative grid gap-10 md:grid-cols-5 md:gap-6"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={{
-          visible: {
-            transition: { staggerChildren: reduce ? 0 : 0.18, delayChildren: reduce ? 0 : 0.3 },
-          },
-        }}
+      <ol
+        ref={ref}
+        className={revealClass(state, "reveal-group relative grid gap-10 md:grid-cols-5 md:gap-6")}
       >
-        <m.span
+        <span
           aria-hidden
-          className="absolute left-[5px] top-0 h-full w-px origin-top bg-gold md:left-0 md:top-[5px] md:h-px md:w-full md:origin-left"
-          variants={{
-            hidden: reduce ? { opacity: 0 } : { scaleX: 0, scaleY: 0 },
-            visible: {
-              opacity: 1,
-              scaleX: 1,
-              scaleY: 1,
-              transition: { duration: reduce ? 0.2 : 1.4, ease },
-            },
-          }}
+          className="reveal-line absolute left-[5px] top-0 h-full w-px origin-top bg-gold md:left-0 md:top-[5px] md:h-px md:w-full md:origin-left"
         />
-        {c.steps.map((s) => (
-          <m.li
+        {c.steps.map((s, k) => (
+          <li
             key={s.n}
-            className="relative pl-8 md:pl-0 md:pt-10"
-            variants={{
-              hidden: reduce ? { opacity: 0 } : { opacity: 0, y: 12 },
-              visible: { opacity: 1, y: 0, transition: { duration: reduce ? 0.2 : 0.6, ease } },
-            }}
+            className="reveal-step relative pl-8 md:pl-0 md:pt-10"
+            style={{ "--reveal-delay": `${0.3 + 0.18 * (k + 1)}s` } as CSSProperties}
           >
             <span
               aria-hidden
@@ -319,9 +299,9 @@ function HowWeWork({ c }: P) {
             <p className="label-mono text-muted-foreground">{s.n}</p>
             <h3 className="mt-2">{s.title}</h3>
             <p className="mt-2 text-small">{s.text}</p>
-          </m.li>
+          </li>
         ))}
-      </m.ol>
+      </ol>
     </section>
   );
 }

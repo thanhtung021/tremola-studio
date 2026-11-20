@@ -36,8 +36,18 @@ export function TremolaLogo({
   useEffect(() => {
     if (animated !== "intro" || reduce) return;
     if (sessionStorage.getItem(INTRO_KEY)) return;
-    sessionStorage.setItem(INTRO_KEY, "1");
-    setPlayIntro(true);
+    // The intro starts from a hidden logo, so it only plays once the animation bundle is ready.
+    // If that takes too long the logo simply stays as rendered (never hidden while waiting).
+    let alive = true;
+    const started = performance.now();
+    void import("@/lib/motion-features").then(() => {
+      if (!alive || performance.now() - started > 1500) return;
+      sessionStorage.setItem(INTRO_KEY, "1");
+      setPlayIntro(true);
+    });
+    return () => {
+      alive = false;
+    };
   }, [animated, reduce]);
 
   useEffect(() => {

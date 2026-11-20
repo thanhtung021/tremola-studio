@@ -131,7 +131,7 @@ export function CaseStudy({ work: w }: { work: Work }) {
               width={1600}
               height={912}
               className="aspect-[21/9] w-full object-cover"
-              initial={reduce ? { opacity: 0 } : { scale: 1.04 }}
+              initial={reduce ? false : { scale: 1.04 }}
               animate={reduce ? { opacity: 1 } : { scale: 1 }}
               transition={{ duration: reduce ? 0.2 : 0.6, ease: [0.22, 1, 0.36, 1] }}
             />

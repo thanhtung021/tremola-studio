@@ -1,9 +1,8 @@
-import { m, useReducedMotion } from "framer-motion";
 import type { ReactNode } from "react";
-import { fadeUp, reducedFade } from "@/lib/motion";
+import { revealClass, useReveal } from "@/lib/use-reveal";
 
 /**
- * Animates children once when 20% of the element enters the viewport.
+ * Fades children up once when 20% of the element enters the viewport (CSS, see useReveal).
  * `eager` (above-the-fold heroes): the same fade-up runs as a CSS animation from the first paint,
  * so server-rendered text is visible without waiting for JavaScript (LCP), with identical motion.
  */
@@ -20,26 +19,36 @@ export function Reveal({
   id?: string;
   eager?: boolean;
 }) {
-  const reduce = useReducedMotion();
+  const Tag = as;
   if (eager) {
-    const Tag = as;
     return (
       <Tag id={id} className={className ? `reveal-eager ${className}` : "reveal-eager"}>
         {children}
       </Tag>
     );
   }
-  const Comp = as === "section" ? m.section : m.div;
   return (
-    <Comp
-      id={id}
-      className={className}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, amount: 0.2 }}
-      variants={reduce ? reducedFade : fadeUp}
-    >
+    <InView as={Tag} id={id} className={className}>
       {children}
-    </Comp>
+    </InView>
+  );
+}
+
+function InView({
+  as: Tag,
+  id,
+  className,
+  children,
+}: {
+  as: "div" | "section";
+  id?: string | undefined;
+  className?: string | undefined;
+  children: ReactNode;
+}) {
+  const [ref, state] = useReveal<HTMLElement>(0.2);
+  return (
+    <Tag ref={ref as never} id={id} className={revealClass(state, className)}>
+      {children}
+    </Tag>
   );
 }

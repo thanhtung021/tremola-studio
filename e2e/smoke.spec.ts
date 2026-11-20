@@ -226,9 +226,37 @@ test("scroll-in animations reveal every section (no content stuck invisible) @re
     await page.waitForTimeout(1200);
     const stuck = await page.evaluate(() =>
       [...document.querySelectorAll<HTMLElement>("main *")]
-        .filter((e) => e.style.opacity === "0" && e.textContent?.trim())
+        .filter(
+          (e) =>
+            (e.style.opacity === "0" || e.classList.contains("reveal-hidden")) &&
+            e.textContent?.trim(),
+        )
         .map((e) => e.textContent!.trim().slice(0, 40)),
     );
     expect(stuck, `${url}: elements still at opacity 0 after scrolling`).toEqual([]);
   }
+});
+
+test("content never waits for the lazily loaded animation bundle @remote", async ({ page }) => {
+  // Simulate a slow network for the framer-motion features chunk only.
+  await page.route(/motion-features/, async (route) => {
+    await new Promise((r) => setTimeout(r, 10_000));
+    await route.continue().catch(() => {});
+  });
+  await page.goto("/");
+  // Hydrated: below-the-fold sections are now waiting for the visitor to scroll to them.
+  await page.waitForSelector(".reveal-hidden", { state: "attached", timeout: 30_000 });
+  const height = await page.evaluate(() => document.body.scrollHeight);
+  for (let y = 0; y <= height; y += 400) {
+    await page.mouse.wheel(0, 400);
+    await page.waitForTimeout(120);
+  }
+  await page.waitForTimeout(2500);
+  const hidden = await page.evaluate(() =>
+    [...document.querySelectorAll<HTMLElement>("main *")]
+      .filter((e) => getComputedStyle(e).opacity === "0" && e.textContent?.trim())
+      .filter((e) => e.closest(".reveal-hidden, [style*='opacity: 0']"))
+      .map((e) => e.textContent!.trim().slice(0, 40)),
+  );
+  expect(hidden, "sections still hidden while the animation bundle is loading").toEqual([]);
 });
