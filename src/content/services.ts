@@ -1,11 +1,15 @@
 import type { Locale } from "@/i18n";
-import { placeholderTrack } from "./media";
+import { mediaTrack } from "./media";
 
 /** Services page copy per locale. Prices live in src/data/pricing.ts. */
 const tracks = {
-  game: placeholderTrack("svc-page-game", "Game audio sample"),
-  app: placeholderTrack("svc-page-app", "Product sound sample"),
-  media: placeholderTrack("svc-page-media", "Media sample"),
+  game: mediaTrack(
+    "svc-page-game",
+    "echoes-score",
+    "Echoes of the Nine Mountains · adaptive score",
+  ),
+  app: mediaTrack("svc-page-app", "forma-app-montage", "Forma · in-app sound"),
+  media: mediaTrack("svc-page-media", "forma-promo-15", "Forma · 15 s promo with sonic logo"),
 };
 
 const en = {

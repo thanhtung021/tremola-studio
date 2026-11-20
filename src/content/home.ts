@@ -1,11 +1,11 @@
 import type { Locale } from "@/i18n";
-import { placeholderTrack } from "./media";
+import { mediaTrack, placeholderTrack } from "./media";
 
 /** Homepage copy per locale. Edit text here; the page layout reads it. */
 const tracks = {
-  game: placeholderTrack("svc-game", "Game audio sample"),
-  app: placeholderTrack("svc-app", "Product sound sample"),
-  media: placeholderTrack("svc-media", "Media sample"),
+  game: mediaTrack("svc-game", "echoes-score", "Echoes of the Nine Mountains · adaptive score"),
+  app: mediaTrack("svc-app", "forma-app-montage", "Forma · in-app sound"),
+  media: mediaTrack("svc-media", "forma-promo-15", "Forma · 15 s promo with sonic logo"),
 };
 const inst = {
   tranh: placeholderTrack("inst-tranh", "Đàn tranh sample"),

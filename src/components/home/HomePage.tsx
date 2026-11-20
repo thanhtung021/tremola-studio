@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { WorkCard } from "@/components/work/WorkCard";
 import { useFounding } from "@/hooks/use-founding";
 import { homeContent, type HomeContent } from "@/content/home";
-import { placeholderMedia } from "@/content/media";
+import { beforeAfterMedia } from "@/content/media";
 import { listWork } from "@/data/work";
 import type { Locale } from "@/i18n";
 import { revealClass, useReveal } from "@/lib/use-reveal";
@@ -128,11 +128,10 @@ function Showreel({ c }: P) {
       <Eyebrow>{c.showreel.eyebrow}</Eyebrow>
       <h2 className="mb-12">{c.showreel.title}</h2>
       <BeforeAfterPlayer
-        placeholder
-        video={placeholderMedia.video}
-        poster={placeholderMedia.poster}
-        before={placeholderMedia.before}
-        after={placeholderMedia.after}
+        video={beforeAfterMedia.video}
+        poster={beforeAfterMedia.poster}
+        before={beforeAfterMedia.before}
+        after={beforeAfterMedia.after}
       />
       <p className="label-mono mt-4 text-muted-foreground">{c.showreel.note}</p>
     </Reveal>

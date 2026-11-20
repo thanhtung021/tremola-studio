@@ -1,6 +1,6 @@
 import { BeforeAfterPlayer } from "@/components/audio/BeforeAfterPlayer";
 import { auditCopy } from "@/content/forms";
-import { placeholderMedia } from "@/content/media";
+import { beforeAfterMedia } from "@/content/media";
 import type { Locale } from "@/i18n";
 import { AuditForm } from "./AuditForm";
 
@@ -16,11 +16,10 @@ export function SoundAuditPage({ locale }: { locale: Locale }) {
           <div className="mt-10">
             <p className="label-mono mb-3 text-muted-foreground">{c.sample}</p>
             <BeforeAfterPlayer
-              placeholder
-              video={placeholderMedia.video}
-              poster={placeholderMedia.poster}
-              before={placeholderMedia.before}
-              after={placeholderMedia.after}
+              video={beforeAfterMedia.video}
+              poster={beforeAfterMedia.poster}
+              before={beforeAfterMedia.before}
+              after={beforeAfterMedia.after}
             />
           </div>
           <ul className="mt-8 space-y-2">

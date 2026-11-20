@@ -127,10 +127,13 @@ function processAudio({ id, file }) {
   const base = `audio/${id}.${h}`;
   mkdirSync(path.join(OUT, "audio"), { recursive: true });
   const m = measureLoudness(file);
-  const filter =
-    `loudnorm=I=${TARGET_I}:TP=${TARGET_TP}:LRA=${TARGET_LRA}` +
-    `:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}` +
-    `:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true:print_format=summary`;
+  // Digital silence (e.g. the "Before" side of a before/after pair) cannot be normalised: copy it.
+  const silent = !Number.isFinite(Number(m.input_i)) || Number(m.input_i) < -60;
+  const filter = silent
+    ? "anull"
+    : `loudnorm=I=${TARGET_I}:TP=${TARGET_TP}:LRA=${TARGET_LRA}` +
+      `:measured_I=${m.input_i}:measured_TP=${m.input_tp}:measured_LRA=${m.input_lra}` +
+      `:measured_thresh=${m.input_thresh}:offset=${m.target_offset}:linear=true:print_format=summary`;
   const mp3 = path.join(OUT, `${base}.mp3`);
   const opus = path.join(OUT, `${base}.webm`);
   ff([
@@ -166,8 +169,8 @@ function processAudio({ id, file }) {
     "-1",
     opus,
   ]);
-  const check = verify(mp3);
-  if (!(Math.abs(check.I - TARGET_I) <= 1 && check.TP <= LIMIT_TP)) {
+  const check = silent ? { I: -Infinity, TP: -Infinity } : verify(mp3);
+  if (!silent && !(Math.abs(check.I - TARGET_I) <= 1 && check.TP <= LIMIT_TP)) {
     throw new Error(`${id}: encoded MP3 misses targets (I=${check.I} LUFS, TP=${check.TP} dBTP)`);
   }
   const p = peaks(mp3);

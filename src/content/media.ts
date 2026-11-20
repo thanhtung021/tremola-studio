@@ -53,6 +53,20 @@ export function demoAsset(id: string) {
   return { src: mediaUrl(d.mp4), duration: d.duration, durationLabel: d.durationLabel };
 }
 
+/** A real, processed track for the shared audio player. */
+export const mediaTrack = (id: string, mediaId: string, title: string): Track => {
+  const a = audioAsset(mediaId);
+  return { id, title, ...a };
+};
+
+/** Before/After pair on the home and Sound Audit pages: Echoes gameplay, silent vs scored. */
+export const beforeAfterMedia = {
+  video: videoAsset("echoes-gameplay").src,
+  poster: videoAsset("echoes-gameplay").poster,
+  before: audioAsset("echoes-before-silent").src,
+  after: audioAsset("echoes-score").src,
+};
+
 /** Placeholder media — replace with real files. */
 export const placeholderMedia = {
   video: videoAsset("placeholder-video").src,
