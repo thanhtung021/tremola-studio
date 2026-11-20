@@ -1,5 +1,5 @@
 import type { Locale } from "@/i18n";
-import { mediaTrack, placeholderTrack } from "./media";
+import { mediaTrack } from "./media";
 
 /** Homepage copy per locale. Edit text here; the page layout reads it. */
 const tracks = {
@@ -8,10 +8,10 @@ const tracks = {
   media: mediaTrack("svc-media", "forma-promo-15", "Forma · 15 s promo with sonic logo"),
 };
 const inst = {
-  tranh: placeholderTrack("inst-tranh", "Đàn tranh sample"),
-  nguyet: placeholderTrack("inst-nguyet", "Đàn nguyệt sample"),
-  sao: placeholderTrack("inst-sao", "Sáo trúc sample"),
-  trung: placeholderTrack("inst-trung", "T'rưng sample"),
+  tranh: mediaTrack("inst-tranh", "inst-tranh-live", "Đàn tranh sample"),
+  nguyet: mediaTrack("inst-nguyet", "inst-nguyet-live", "Đàn nguyệt sample"),
+  sao: mediaTrack("inst-sao", "inst-sao-live", "Sáo trúc sample"),
+  trung: mediaTrack("inst-trung", "inst-trung-live", "T'rưng sample"),
 };
 
 const en = {
