@@ -14,7 +14,6 @@ export const en = {
     pages: "Pages",
     social: "Social",
     contact: "Contact",
-    email: "[contact email]",
     rights: "All rights reserved.",
   },
   pages: {

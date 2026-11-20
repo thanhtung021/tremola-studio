@@ -27,6 +27,7 @@ import { MiniPlayer } from "../components/audio/MiniPlayer";
 import { CookieNotice } from "../components/layout/CookieNotice";
 import { captureAttribution } from "../lib/attribution";
 import { initTracking, track } from "../lib/track";
+import { contact, primaryEmail } from "../config/contact";
 
 function NotFoundComponent() {
   return (
@@ -114,6 +115,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
           slogan: "Sound with a soul of its own.",
           url: `${loaderData?.origin ?? ""}/`,
           logo: `${loaderData?.origin ?? ""}/apple-touch-icon.png`,
+          email: primaryEmail,
+          telephone: contact.phone,
           // Placeholder: replace with the real profile URLs.
           sameAs: [
             "https://www.linkedin.com/company/placeholder-tremola-studio",

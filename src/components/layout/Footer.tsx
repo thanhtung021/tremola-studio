@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { TremolaLogo } from "@/components/brand/TremolaLogo";
+import { contact } from "@/config/contact";
 import { useLocale } from "@/i18n";
 import { routes } from "./nav";
 
@@ -52,9 +53,20 @@ export function Footer() {
         </div>
         <div className="col-span-12 md:col-span-3">
           <p className="label-mono mb-4 text-muted-foreground">{t.footer.contact}</p>
-          <p className="text-small text-ivory">
-            {t.footer.email} <span className="label-mono text-muted-foreground">Placeholder</span>
-          </p>
+          <ul className="space-y-2 text-small text-ivory">
+            {contact.emails.map((email) => (
+              <li key={email}>
+                <a href={`mailto:${email}`} className="link-draw">
+                  {email}
+                </a>
+              </li>
+            ))}
+            <li>
+              <a href={`tel:${contact.phone}`} className="link-draw">
+                {contact.phoneDisplay}
+              </a>
+            </li>
+          </ul>
         </div>
       </div>
       <div className="container-site border-t border-hairline py-6">

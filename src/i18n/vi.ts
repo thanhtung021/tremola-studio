@@ -16,7 +16,6 @@ export const vi: Dict = {
     pages: "Trang",
     social: "Mạng xã hội",
     contact: "Liên hệ",
-    email: "[contact email]",
     rights: "Bảo lưu mọi quyền.",
   },
   pages: {
