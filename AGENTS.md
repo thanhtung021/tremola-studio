@@ -32,7 +32,7 @@ use the editor.
 # Tremola Studio — Project Knowledge (applies to every prompt)
 
 ## What we are building
-A portfolio website for Tremola Studio: a composer-led interactive sound studio from Vietnam that designs complete, exclusive sonic systems (music incl. adaptive music, SFX, UI sound, sonic branding) for games and apps, rooted in Southeast Asian musical heritage. The site's job: let visitors HEAR the work, then request a Free Sound Audit. Clients buy sound with their ears, so every page leads to something they can listen to.
+A portfolio website for Tremola Studio: a composer-led interactive sound studio from Vietnam that designs complete, exclusive sonic systems (music incl. adaptive music, SFX, UI sound, sonic branding) for games and apps, rooted in East Asian musical heritage. The site's job: let visitors HEAR the work, then request a Free Sound Audit. Clients buy sound with their ears, so every page leads to something they can listen to.
 
 ## Brand facts
 - Name: always "Tremola Studio" on first mention on every page. Never write "TREMOLA" in all caps inside sentences. Descriptor: "Tremola Studio · Sound for games & apps".

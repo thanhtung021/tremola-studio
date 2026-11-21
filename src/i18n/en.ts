@@ -49,7 +49,7 @@ export const en = {
     audit: "Get a free Sound Audit",
   },
   meta: {
-    home: "Tremola Studio gives games and apps a sound of their own: adaptive music, SFX, UI sound and sonic branding, rooted in Southeast Asian craft.",
+    home: "Tremola Studio gives games and apps a sound of their own: adaptive music, SFX, UI sound and sonic branding, rooted in East Asian craft.",
     work: "Listen to game and app sound by Tremola Studio: main themes, adaptive music, UI sound kits and sonic logos.",
     services:
       "Game Audio, Product & App Sound and Media packages from Tremola Studio. Priced by package, exclusive by default.",

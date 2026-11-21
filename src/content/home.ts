@@ -18,7 +18,7 @@ const en = {
   hero: {
     eyebrow: "Composer-led sound studio · Vietnam",
     title: "Sound with a soul of its own.",
-    text: "Tremola Studio designs complete sonic systems for games and apps. Music, SFX and UI sound that speak one language, rooted in Southeast Asian craft.",
+    text: "Tremola Studio designs complete sonic systems for games and apps. Music, SFX and UI sound that speak one language, rooted in East Asian craft.",
     cta: "Get a free Sound Audit",
     listen: "Listen to the reel",
     note: "Bamboo, zithers and moon lutes, recorded live.",
@@ -57,7 +57,7 @@ const en = {
   asian: {
     eyebrow: "The Asian Signature",
     title: "Instruments with a voice of their own.",
-    text: "Our signature is Southeast Asian craft, woven into modern interactive audio. Played by hand, recorded live, made to sit inside a game engine.",
+    text: "Our signature is East Asian craft, woven into modern interactive audio. Played by hand, recorded live, made to sit inside a game engine.",
     note: "Live Asian Recording is available as an add-on for any package.",
   },
   instruments: [
@@ -77,7 +77,7 @@ const en = {
       text: "Music and sound respond to what players and users do, not loops on repeat.",
     },
     {
-      title: "Southeast Asian craft",
+      title: "East Asian craft",
       text: "Bamboo, wood and string instruments, used authentically and in a modern way.",
     },
     {
@@ -127,7 +127,7 @@ const vi: HomeContent = {
   hero: {
     eyebrow: "Studio âm thanh do nhà soạn nhạc dẫn dắt · Việt Nam",
     title: "Âm thanh có hồn riêng.",
-    text: "Tremola Studio thiết kế trọn vẹn hệ thống âm thanh cho game và ứng dụng. Nhạc, SFX và UI sound cùng nói một ngôn ngữ, bắt rễ từ chất liệu Đông Nam Á.",
+    text: "Tremola Studio thiết kế trọn vẹn hệ thống âm thanh cho game và ứng dụng. Nhạc, SFX và UI sound cùng nói một ngôn ngữ, bắt rễ từ chất liệu Đông Á.",
     cta: "Nhận Sound Audit miễn phí",
     listen: "Nghe showreel",
     note: "Tre, đàn tranh và đàn nguyệt, thu âm trực tiếp.",
@@ -166,7 +166,7 @@ const vi: HomeContent = {
   asian: {
     eyebrow: "Dấu ấn Á Đông",
     title: "Những nhạc cụ có giọng nói riêng.",
-    text: "Dấu ấn của chúng tôi là chất liệu Đông Nam Á, dệt vào âm thanh tương tác hiện đại. Chơi bằng tay, thu trực tiếp, sẵn sàng chạy trong game engine.",
+    text: "Dấu ấn của chúng tôi là chất liệu Đông Á, dệt vào âm thanh tương tác hiện đại. Chơi bằng tay, thu trực tiếp, sẵn sàng chạy trong game engine.",
     note: "Live Asian Recording có thể thêm vào bất kỳ gói nào.",
   },
   instruments: [
@@ -186,7 +186,7 @@ const vi: HomeContent = {
       text: "Nhạc và âm thanh phản hồi theo hành động của người chơi, người dùng, không phải vòng lặp phát mãi.",
     },
     {
-      title: "Chất liệu Đông Nam Á",
+      title: "Chất liệu Đông Á",
       text: "Nhạc cụ tre, gỗ và dây, dùng đúng tinh thần và theo cách hiện đại.",
     },
     {
