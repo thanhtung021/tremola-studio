@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { useRef } from "react";
-import { useAudio } from "@/components/audio/AudioProvider";
+import { SoundVideo } from "@/components/audio/SoundVideo";
 import { Reveal } from "@/components/brand/Reveal";
 import { StringDivider } from "@/components/brand/StringDivider";
 import { Button } from "@/components/ui/button";
@@ -13,8 +12,6 @@ import { track } from "@/lib/track";
 export function DemoPage({ work: w }: { work: Work }) {
   const { locale, t } = useLocale();
   const c = t.work;
-  const { claim } = useAudio();
-  const video = useRef<HTMLVideoElement>(null);
 
   const all = listWork(locale);
   const idx = all.findIndex((x) => x.slug === w.slug);
@@ -65,23 +62,12 @@ export function DemoPage({ work: w }: { work: Work }) {
           </span>
         </p>
         <div className="mt-10 overflow-hidden rounded-card border border-hairline bg-raised">
-          <video
-            ref={video}
-            key={w.video.src}
+          <SoundVideo
+            id={`demo:${w.slug}`}
             src={w.video.src}
             poster={w.cover}
-            controls
-            playsInline
-            preload="none"
-            aria-label={w.title}
-            width={1920}
-            height={1080}
-            className="aspect-video w-full bg-background"
-            onPlay={() => {
-              // One sound source site-wide: stop the mini player; it pauses this video in turn.
-              claim(`demo:${w.slug}`, () => video.current?.pause());
-              track("demo_play", { demo: w.slug, locale });
-            }}
+            label={w.title}
+            onPlay={() => track("demo_play", { demo: w.slug, locale })}
           />
         </div>
         <p className="label-mono mt-4 text-muted-foreground">{c.soundOn}</p>

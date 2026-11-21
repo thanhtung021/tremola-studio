@@ -118,6 +118,7 @@ const en = {
     title: "Let your world sound like nowhere else.",
     text: "Send us your trailer or a screen recording of your app. We send back a 60–90 second audit with one moment re-scored.",
     cta: "Get a free Sound Audit",
+    videoLabel: "Tremola campaign music · 60 s",
   },
 };
 export type HomeContent = typeof en;
@@ -234,6 +235,7 @@ const vi: HomeContent = {
     title: "Để sản phẩm của bạn có một âm thanh không lẫn vào đâu.",
     text: "Gửi trailer hoặc bản quay màn hình ứng dụng. Chúng tôi gửi lại bản audit 60–90 giây, kèm một khoảnh khắc được làm lại âm thanh.",
     cta: "Nhận Sound Audit miễn phí",
+    videoLabel: "Nhạc chiến dịch Tremola · 60 giây",
   },
 };
 

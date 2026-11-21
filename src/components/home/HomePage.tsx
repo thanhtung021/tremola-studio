@@ -15,7 +15,9 @@ import { Button } from "@/components/ui/button";
 import { WorkCard } from "@/components/work/WorkCard";
 import { useFounding } from "@/hooks/use-founding";
 import { homeContent, type HomeContent } from "@/content/home";
-import { beforeAfterMedia } from "@/content/media";
+import { beforeAfterMedia, demoAsset } from "@/content/media";
+import { SoundVideo } from "@/components/audio/SoundVideo";
+import campaignPoster from "@/assets/home/campaign-waveform.jpg";
 import { listWork } from "@/data/work";
 import type { Locale } from "@/i18n";
 import { revealClass, useReveal } from "@/lib/use-reveal";
@@ -375,6 +377,8 @@ function FreePack({ c, r }: P) {
   );
 }
 
+const campaignVideo = demoAsset("campaign-waveform");
+
 function FinalCta({ c, r }: P) {
   return (
     <Reveal as="section" className="ambient-final section container-site text-center">
@@ -382,6 +386,19 @@ function FinalCta({ c, r }: P) {
         {c.final.title}
       </p>
       <p className="mx-auto mt-6 max-w-2xl">{c.final.text}</p>
+      <figure className="mx-auto mt-12 max-w-4xl">
+        <div className="overflow-hidden rounded-card border border-hairline bg-raised">
+          <SoundVideo
+            id="home:campaign"
+            src={campaignVideo.src}
+            poster={campaignPoster}
+            label={c.final.videoLabel}
+          />
+        </div>
+        <figcaption className="label-mono mt-4 text-muted-foreground">
+          {c.final.videoLabel}
+        </figcaption>
+      </figure>
       <Button asChild size="lg" className="mt-10">
         <Link to={r.audit}>{c.final.cta}</Link>
       </Button>
