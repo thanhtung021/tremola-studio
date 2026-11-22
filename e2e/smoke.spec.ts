@@ -112,9 +112,25 @@ test("portfolio lists the demos and each demo page plays its own language cut @r
   await expect(page.locator("h1")).toHaveText("The Hospital");
   await expect(page.getByText("Bạn sẽ nghe")).toBeVisible();
 
-  // Old placeholder projects are gone.
-  const old = await page.request.get("/work/lantern-valley");
-  expect(old.status()).toBe(404);
+  // Retired placeholder projects redirect permanently to the closest demo.
+  const old = await page.request.get("/vi/work/lantern-valley", { maxRedirects: 0 });
+  expect(old.status()).toBe(301);
+  expect(old.headers()["location"]).toMatch(/\/vi\/work\/echoes-of-the-nine-mountains$/);
+});
+
+test("services FAQ answers and FAQPage data are in the server HTML @remote", async ({ page }) => {
+  const res = await page.request.get("/services");
+  const html = await res.text();
+  expect(html).toContain("We deliver music and sound as Wwise or FMOD projects");
+  const faq = [...html.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/g)]
+    .map((m) => JSON.parse(m[1]!) as { "@type"?: string; mainEntity?: unknown[] })
+    .find((j) => j["@type"] === "FAQPage");
+  expect(faq?.mainEntity?.length).toBeGreaterThan(3);
+  if (remote) {
+    // Set by the Worker entry (src/server.ts), which the local dev server does not run.
+    expect(res.headers()["strict-transport-security"]).toContain("max-age=31536000");
+    expect(res.headers()["x-content-type-options"]).toBe("nosniff");
+  }
 });
 
 test("no audio autoplays and media is not preloaded @remote", async ({ page }) => {
