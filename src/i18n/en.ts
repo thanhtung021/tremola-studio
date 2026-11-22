@@ -15,6 +15,8 @@ export const en = {
     social: "Social",
     contact: "Contact",
     rights: "All rights reserved.",
+    founderSites: "Founder's portfolio:",
+    and: "and",
   },
   pages: {
     home: "Tremola Studio",

@@ -82,28 +82,31 @@ export function AboutPage({ locale }: { locale: Locale }) {
         <StringDivider />
       </div>
 
-      <Reveal as="section" className="section container-site grid-12 items-center">
-        <div className="col-span-12 md:col-span-4">
-          <div
-            role="img"
-            aria-label={c.founder.portraitAlt}
-            className="relative grid aspect-[4/5] place-items-center rounded-card border border-hairline bg-raised"
-          >
-            <TremolaLogo size={64} className="opacity-40" />
-            <span className="label-mono absolute left-4 top-4 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">
-              Placeholder
-            </span>
+      {/* Founder block stays hidden until the real name, portrait and bio are in about.ts. */}
+      {c.founder.ready && (
+        <Reveal as="section" className="section container-site grid-12 items-center">
+          <div className="col-span-12 md:col-span-4">
+            <div
+              role="img"
+              aria-label={c.founder.portraitAlt}
+              className="relative grid aspect-[4/5] place-items-center rounded-card border border-hairline bg-raised"
+            >
+              <TremolaLogo size={64} className="opacity-40" />
+              <span className="label-mono absolute left-4 top-4 rounded-full bg-background/70 px-3 py-1 text-muted-foreground">
+                Placeholder
+              </span>
+            </div>
           </div>
-        </div>
-        <div className="col-span-12 mt-10 md:col-span-7 md:col-start-6 md:mt-0">
-          <p className="eyebrow label-mono">{c.founderTitle}</p>
-          <h2 className="mt-4">{c.founder.name}</h2>
-          <p className="label-mono mt-3 text-muted-foreground">{c.founder.role}</p>
-          <p className="mt-6 max-w-xl">
-            {c.founder.bio} <span className="label-mono text-muted-foreground">Placeholder</span>
-          </p>
-        </div>
-      </Reveal>
+          <div className="col-span-12 mt-10 md:col-span-7 md:col-start-6 md:mt-0">
+            <p className="eyebrow label-mono">{c.founderTitle}</p>
+            <h2 className="mt-4">{c.founder.name}</h2>
+            <p className="label-mono mt-3 text-muted-foreground">{c.founder.role}</p>
+            <p className="mt-6 max-w-xl">
+              {c.founder.bio} <span className="label-mono text-muted-foreground">Placeholder</span>
+            </p>
+          </div>
+        </Reveal>
+      )}
 
       <Reveal as="section" className="section container-site pt-0">
         <h2 className="mb-8 text-[28px]">{c.notTitle}</h2>

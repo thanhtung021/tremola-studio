@@ -24,6 +24,8 @@ const en = {
     "In Vietnam, music grows from bamboo. Bamboo becomes flutes, zithers and the strings that tremble under a player's hand: the tremolo. Tremola Studio carries that trembling string into games and apps, crafting sound that feels alive, human and unmistakably its own.",
   founderTitle: "The founder",
   founder: {
+    /** false hides the founder block (no placeholder text in public). */
+    ready: false,
     portraitAlt: "Placeholder portrait of the founder",
     name: "[Founder name]",
     role: "Founder & Composer",
@@ -62,6 +64,7 @@ const vi: AboutContent = {
     "Ở Việt Nam, âm nhạc mọc lên từ cây tre. Tre thành sáo, thành đàn, thành những sợi dây rung lên dưới tay người chơi: tiếng tremolo. Tremola Studio mang sợi dây rung ấy vào game và ứng dụng, tạo nên thứ âm thanh sống động, có hơi thở con người và mang hồn riêng không lẫn vào đâu.",
   founderTitle: "Người sáng lập",
   founder: {
+    ready: false,
     portraitAlt: "Ảnh chân dung người sáng lập (Placeholder)",
     name: "[Tên người sáng lập]",
     role: "Founder & Composer",

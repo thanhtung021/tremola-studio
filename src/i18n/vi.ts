@@ -17,6 +17,8 @@ export const vi: Dict = {
     social: "Mạng xã hội",
     contact: "Liên hệ",
     rights: "Bảo lưu mọi quyền.",
+    founderSites: "Hồ sơ người sáng lập:",
+    and: "và",
   },
   pages: {
     home: "Tremola Studio",

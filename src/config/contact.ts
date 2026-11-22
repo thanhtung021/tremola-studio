@@ -9,3 +9,15 @@ export const contact = {
 } as const;
 
 export const primaryEmail = contact.emails[0];
+
+/**
+ * Public profiles (footer "Social" column and Organization `sameAs`). The column stays hidden
+ * while this list is empty — add `{ label: "LinkedIn", href: "https://…" }` when a profile is live.
+ */
+export const socialProfiles: { label: string; href: string }[] = [];
+
+/** The founder's own sites, linked from the footer bottom bar. */
+export const founderSites = [
+  { label: "sylvanusfinnian.com", href: "https://sylvanusfinnian.com" },
+  { label: "sylvanusaudio.com", href: "https://sylvanusaudio.com" },
+] as const;

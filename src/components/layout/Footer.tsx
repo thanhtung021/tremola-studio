@@ -1,10 +1,8 @@
 import { Link } from "@tanstack/react-router";
 import { TremolaLogo } from "@/components/brand/TremolaLogo";
-import { contact } from "@/config/contact";
+import { contact, founderSites, socialProfiles } from "@/config/contact";
 import { useLocale } from "@/i18n";
 import { routes } from "./nav";
-
-const socials = ["LinkedIn", "YouTube", "TikTok", "Instagram"];
 
 export function Footer() {
   const { locale, t } = useLocale();
@@ -38,20 +36,28 @@ export function Footer() {
             ))}
           </ul>
         </div>
-        <div className="col-span-6 md:col-span-2">
-          <p className="label-mono mb-4 text-muted-foreground">{t.footer.social}</p>
-          <ul className="space-y-2 text-small">
-            {socials.map((s) => (
-              <li key={s}>
-                <a href="#" className="link-draw">
-                  {s}
-                </a>{" "}
-                <span className="label-mono text-muted-foreground">Placeholder</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="col-span-12 md:col-span-3">
+        {socialProfiles.length > 0 && (
+          <div className="col-span-6 md:col-span-2">
+            <p className="label-mono mb-4 text-muted-foreground">{t.footer.social}</p>
+            <ul className="space-y-2 text-small">
+              {socialProfiles.map((s) => (
+                <li key={s.href}>
+                  <a href={s.href} target="_blank" rel="noopener" className="link-draw">
+                    {s.label}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {/* Without the Social column the contact block keeps its place at the right edge. */}
+        <div
+          className={
+            socialProfiles.length > 0
+              ? "col-span-12 md:col-span-3"
+              : "col-span-12 md:col-span-3 md:col-start-10"
+          }
+        >
           <p className="label-mono mb-4 text-muted-foreground">{t.footer.contact}</p>
           <ul className="space-y-2 text-small text-ivory">
             {contact.emails.map((email) => (
@@ -69,9 +75,20 @@ export function Footer() {
           </ul>
         </div>
       </div>
-      <div className="container-site border-t border-hairline py-6">
+      <div className="container-site flex flex-col gap-3 border-t border-hairline py-6 md:flex-row md:items-center md:justify-between">
         <p className="label-mono text-muted-foreground">
           © {new Date().getFullYear()} Tremola Studio. {t.footer.rights}
+        </p>
+        <p className="label-mono text-muted-foreground">
+          {t.footer.founderSites}{" "}
+          {founderSites.map((s, i) => (
+            <span key={s.href}>
+              {i > 0 && ` ${t.footer.and} `}
+              <a href={s.href} className="link-draw">
+                {s.label}
+              </a>
+            </span>
+          ))}
         </p>
       </div>
     </footer>
