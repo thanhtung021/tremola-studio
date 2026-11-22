@@ -3,6 +3,7 @@ import { alternateLinks, type Locale } from "@/i18n";
 type DemoHeadData = {
   slug: string;
   title: string;
+  seoTitle: string;
   summary: string;
   cover: string;
   video: string;
@@ -16,9 +17,8 @@ export function demoHead(
   locale: Locale,
   notFound: { title: string; description: string },
 ) {
-  // Tab and search titles use plain punctuation: "Echoes · Asian Signature" → "Echoes: Asian Signature".
-  const name = (d?.title ?? notFound.title).replace(/\s+·\s+/g, ": ");
-  const title = `${name} | Tremola Studio`;
+  // Search title = the demo's keyword title (work.ts seoTitle), at most 60 characters in total.
+  const title = `${d?.seoTitle ?? notFound.title} | Tremola Studio`;
   const description = d?.summary ?? notFound.description;
   const abs = (u: string) => (/^https?:/.test(u) ? u : `${origin}${u}`);
   return {

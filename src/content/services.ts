@@ -14,7 +14,7 @@ const tracks = {
 
 const en = {
   eyebrow: "Tremola Studio · Services",
-  title: "Services",
+  title: "Sound for games, apps and brands",
   intro:
     "Priced by package, never by the hour. Every package is an exclusive licence unless you choose otherwise.",
   sections: [
@@ -95,7 +95,7 @@ export type ServicesContent = typeof en;
 
 const vi: ServicesContent = {
   eyebrow: "Tremola Studio · Dịch vụ",
-  title: "Dịch vụ",
+  title: "Âm thanh cho game, ứng dụng và thương hiệu",
   intro:
     "Báo giá theo gói, không tính theo giờ. Mọi gói đều mặc định là giấy phép độc quyền, trừ khi bạn chọn khác.",
   sections: [

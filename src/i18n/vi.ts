@@ -29,6 +29,7 @@ export const vi: Dict = {
     about: "Giới thiệu",
   },
   work: {
+    heading: "Dự án âm thanh game và ứng dụng",
     intro:
       "Bật tiếng khi xem. Mỗi demo cho thấy một hệ thống âm thanh hoạt động trong game hoặc app.",
     filterLabel: "Lọc dự án",
@@ -53,7 +54,14 @@ export const vi: Dict = {
     audit: "Nhận Sound Audit miễn phí",
   },
   meta: {
-    homeTitle: "Tremola Studio | Âm thanh cho game và ứng dụng",
+    titles: {
+      home: "Tremola Studio | Thiết kế âm thanh game và thương hiệu",
+      work: "Dự án âm thanh game và ứng dụng | Tremola Studio",
+      services: "Bảng giá âm thanh game, UI và logo âm thanh | Tremola Studio",
+      audit: "Sound Audit miễn phí cho game và ứng dụng | Tremola Studio",
+      freePack: "Sample đàn tranh và nhạc cụ Việt miễn phí | Tremola Studio",
+      about: "Giới thiệu Tremola Studio: studio âm thanh tại Việt Nam",
+    },
     home: "Tremola Studio tạo cho game và ứng dụng một âm thanh của riêng mình: nhạc adaptive, SFX, UI sound và sonic branding, mang chất liệu Đông Á.",
     work: "Nghe các dự án âm thanh của Tremola Studio: nhạc chủ đề, nhạc adaptive, UI sound kit và sonic logo.",
     services:

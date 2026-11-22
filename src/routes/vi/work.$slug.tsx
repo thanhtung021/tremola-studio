@@ -13,6 +13,7 @@ export const Route = createFileRoute("/vi/work/$slug")({
     return {
       slug: w.slug,
       title: w.title,
+      seoTitle: w.seoTitle,
       summary: w.summary,
       cover: w.cover,
       video: w.video.src,

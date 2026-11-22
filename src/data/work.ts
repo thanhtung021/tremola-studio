@@ -61,6 +61,8 @@ export type Credit = "client" | "concept" | "redesign" | "demo-app";
 
 type WorkText = {
   title: string;
+  /** Search/tab title before " | Tremola Studio" (keyword first, at most 43 characters). */
+  seoTitle: string;
   genre: string;
   summary: string;
   shows: string;
@@ -88,6 +90,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["indie", "premium"],
     en: {
+      seoTitle: "Echoes: Adaptive Fantasy RPG Music",
       title: "Echoes of the Nine Mountains",
       genre: "Fantasy RPG",
       summary:
@@ -98,6 +101,7 @@ const entries: WorkEntry[] = [
       creditNote: "Music and sound by Tremola for Echoes of the Nine Mountains.",
     },
     vi: {
+      seoTitle: "Echoes: nhạc tương tác cho game RPG fantasy",
       title: "Echoes of the Nine Mountains",
       genre: "Fantasy / RPG",
       summary:
@@ -114,6 +118,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["basic", "indie"],
     en: {
+      seoTitle: "The Hospital: Horror Game Sound Design",
       title: "The Hospital",
       genre: "Horror",
       summary:
@@ -125,6 +130,7 @@ const entries: WorkEntry[] = [
         "Sound by Tremola for The Hospital. The gameplay scene was recreated for this demo.",
     },
     vi: {
+      seoTitle: "The Hospital: âm thanh game kinh dị",
       title: "The Hospital",
       genre: "Kinh dị",
       summary:
@@ -141,6 +147,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["sonic-identity", "brand-suite"],
     en: {
+      seoTitle: "Forma: Fitness App Sound and Sonic Logo",
       title: "Forma",
       genre: "Fitness app",
       summary:
@@ -152,6 +159,7 @@ const entries: WorkEntry[] = [
         "Sound by Tremola for Forma, on the app's real screens (Vietnamese interface). Mixed at in-app level, so turn the volume up a little.",
     },
     vi: {
+      seoTitle: "Forma: âm thanh cho app thể dục",
       title: "Forma",
       genre: "App thể dục",
       summary:
@@ -170,6 +178,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["indie", "live-recording"],
     en: {
+      seoTitle: "Vietnamese Instruments for Games: Echoes",
       title: "Echoes · Asian Signature",
       genre: "Asian fantasy / wuxia",
       summary:
@@ -181,6 +190,7 @@ const entries: WorkEntry[] = [
         "Music and sound by Tremola for Echoes of the Nine Mountains. The Vietnamese instruments in this demo are sampled; recording them live is an add-on.",
     },
     vi: {
+      seoTitle: "Nhạc cụ Việt trong game: Echoes",
       title: "Echoes · Asian Signature",
       genre: "Fantasy Á Đông / kiếm hiệp",
       summary:
@@ -197,6 +207,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["basic", "indie"],
     en: {
+      seoTitle: "Catfluencer: Cozy Game Music and SFX",
       title: "Catfluencer",
       genre: "Cozy / casual puzzle",
       summary:
@@ -207,6 +218,7 @@ const entries: WorkEntry[] = [
       creditNote: "Music and SFX by Tremola for Catfluencer.",
     },
     vi: {
+      seoTitle: "Catfluencer: nhạc và SFX game cozy",
       title: "Catfluencer",
       genre: "Cozy / casual puzzle",
       summary:
@@ -223,6 +235,7 @@ const entries: WorkEntry[] = [
     credit: "client",
     packages: ["sonic-identity", "stinger"],
     en: {
+      seoTitle: "Sonic Logo Design for Four Brands",
       title: "Sonic Logos",
       genre: "Sonic branding",
       summary:
@@ -233,6 +246,7 @@ const entries: WorkEntry[] = [
       creditNote: "Sonic logos and UI sounds by Tremola for Stick, Forma, Logline and Musician.",
     },
     vi: {
+      seoTitle: "Thiết kế logo âm thanh cho 4 thương hiệu",
       title: "Sonic Logo",
       genre: "Nhận diện âm thanh",
       summary:
@@ -249,6 +263,7 @@ const entries: WorkEntry[] = [
     credit: "redesign",
     packages: ["basic", "premium"],
     en: {
+      seoTitle: "Action Game Sound Redesign",
       title: "Action · Sound Redesign",
       genre: "Action",
       summary:
@@ -260,6 +275,7 @@ const entries: WorkEntry[] = [
         "Sound redesign made for this portfolio. Footage © Sony Interactive Entertainment (God of War); not affiliated with or endorsed by Sony.",
     },
     vi: {
+      seoTitle: "Sound redesign game hành động",
       title: "Action · Sound Redesign",
       genre: "Hành động",
       summary:
@@ -277,6 +293,7 @@ const entries: WorkEntry[] = [
     credit: "demo-app",
     packages: ["ui-kit", "sonic-identity"],
     en: {
+      seoTitle: "Nhịp: Fintech App UI Sound Design",
       title: "Nhịp · Fintech app",
       genre: "Fintech",
       summary:
@@ -286,6 +303,7 @@ const entries: WorkEntry[] = [
       creditNote: "Nhịp is an illustrative app built by Tremola for this demo, not a real product.",
     },
     vi: {
+      seoTitle: "Nhịp: thiết kế UI sound cho app tài chính",
       title: "Nhịp · App tài chính",
       genre: "Fintech",
       summary:

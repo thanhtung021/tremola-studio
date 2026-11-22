@@ -58,7 +58,8 @@ export function alternateLinks(locale: Locale, path: string, origin: string) {
 export function pageHead(locale: Locale, key: keyof Dict["pages"], ctx?: HeadCtx) {
   const d = dictionaries[locale];
   const origin = originFrom(ctx);
-  const title = key === "home" ? d.meta.homeTitle : `${d.pages[key]} | Tremola Studio`;
+  // Search titles: keyword first, at most 60 characters (seo-plan KEYWORDS.md).
+  const title = d.meta.titles[key];
   const path = pagePaths[key];
   const image = origin ? `${origin}/og-image.png` : null;
   return {

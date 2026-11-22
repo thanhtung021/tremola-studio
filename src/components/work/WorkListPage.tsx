@@ -23,7 +23,7 @@ export function WorkListPage({
   return (
     <div className="container-site pb-32 pt-40">
       <Reveal eager>
-        <h1>{t.pages.work}</h1>
+        <h1>{t.work.heading}</h1>
         <p className="mt-6 max-w-2xl">{t.work.intro}</p>
       </Reveal>
       <div role="group" aria-label={t.work.filterLabel} className="mt-12 flex flex-wrap gap-2">
