@@ -27,7 +27,7 @@ import { MiniPlayer } from "../components/audio/MiniPlayer";
 import { CookieNotice } from "../components/layout/CookieNotice";
 import { captureAttribution } from "../lib/attribution";
 import { initTracking, track } from "../lib/track";
-import { contact, primaryEmail } from "../config/contact";
+import { contact, primaryEmail, socialProfiles } from "../config/contact";
 
 function NotFoundComponent() {
   return (
@@ -111,19 +111,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "Organization",
+          "@id": `${loaderData?.origin ?? ""}/#organization`,
           name: "Tremola Studio",
           slogan: "Sound with a soul of its own.",
           url: `${loaderData?.origin ?? ""}/`,
           logo: `${loaderData?.origin ?? ""}/apple-touch-icon.png`,
           email: primaryEmail,
           telephone: contact.phone,
-          // Placeholder: replace with the real profile URLs.
-          sameAs: [
-            "https://www.linkedin.com/company/placeholder-tremola-studio",
-            "https://www.youtube.com/@placeholder-tremola-studio",
-            "https://www.instagram.com/placeholder-tremola-studio",
-            "https://www.tiktok.com/@placeholder-tremola-studio",
-          ].filter((u) => !u.includes("placeholder")),
+          // One Person entity shared with sylvanusfinnian.com and sylvanusaudio.com.
+          founder: { "@id": "https://sylvanusfinnian.com/#person" },
+          // Real public profiles only (src/config/contact.ts); empty until the links arrive.
+          sameAs: socialProfiles.map((s) => s.href),
         }),
       },
     ],
