@@ -14,7 +14,11 @@ export const primaryEmail = contact.emails[0];
  * Public profiles (footer "Social" column and Organization `sameAs`). The column stays hidden
  * while this list is empty — add `{ label: "LinkedIn", href: "https://…" }` when a profile is live.
  */
-export const socialProfiles: { label: string; href: string }[] = [];
+export const socialProfiles: { label: string; href: string }[] = [
+  { label: "YouTube", href: "https://www.youtube.com/@TremolaStudio" },
+  { label: "Fiverr", href: "https://www.fiverr.com/tremolastudio" },
+  { label: "itch.io", href: "https://tremolastudio.itch.io" },
+];
 
 /** The founder's own sites, linked from the footer bottom bar. */
 export const founderSites = [
