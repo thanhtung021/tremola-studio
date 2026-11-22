@@ -2,6 +2,7 @@ import "./lib/error-capture";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
+import { permanentRedirect } from "./server/redirects";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -96,88 +97,71 @@ function withHeader(r: Response, name: string, value: string) {
 // Hosting compresses every response at the edge. Never compress a body (gzip, brotli,
 // CompressionStream) or set content-encoding here or in a server route: the body gets encoded
 // twice and renders garbled.
+/** Security headers on every response (HTTPS only for a year, no MIME sniffing). */
+function withSecurityHeaders(response: Response): Response {
+  const out = new Response(response.body, response);
+  out.headers.set("strict-transport-security", "max-age=31536000; includeSubDomains");
+  out.headers.set("x-content-type-options", "nosniff");
+  return out;
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
-    const url = new URL(request.url);
-    // Secondary domains (www, tremola.studio, tremola.vn) → 301 to the canonical origin, HTTPS.
-    if (REDIRECT_HOSTS.has(url.hostname)) {
-      return Response.redirect(`${CANONICAL_ORIGIN}${url.pathname}${url.search}`, 301);
-    }
-    if (
-      url.pathname.startsWith("/media/") &&
-      (request.method === "GET" || request.method === "HEAD")
-    ) {
-      try {
-        const { handleMedia } = await import("./server/media.server");
-        return await handleMedia(request);
-      } catch (error) {
-        console.error(error);
-        return new Response("Media error", { status: 500 });
-      }
-    }
-    if (url.pathname === "/api/health") {
-      // Uptime monitor target: checks the Worker and a cheap database read. Also keeps the
-      // Supabase Free project from pausing for inactivity.
-      try {
-        const { healthCheck } = await import("./server/health.server");
-        const h = await healthCheck();
-        return Response.json(h, {
-          status: h.ok ? 200 : 503,
-          headers: { "cache-control": "no-store" },
-        });
-      } catch (error) {
-        console.error(error);
-        return Response.json({ ok: false }, { status: 503 });
-      }
-    }
-    if (url.pathname === "/api/client-error" && request.method === "POST") {
-      // Browser error beacon → Worker Logs (Cloudflare Observability). Size-capped, never echoed.
-      try {
-        const origin = request.headers.get("origin");
-        if (origin && new URL(origin).host !== url.host) return new Response(null, { status: 204 });
-        const text = (await request.text()).slice(0, 5000);
-        console.error(`[client-error] ${text}`);
-      } catch {
-        /* ignore */
-      }
-      return new Response(null, { status: 204 });
-    }
-    if (url.pathname === "/api/pack/download" && request.method === "GET") {
-      try {
-        const { handlePackDownload } = await import("./server/pack-download.server");
-        return await handlePackDownload(request);
-      } catch (error) {
-        console.error(error);
-        return new Response(renderErrorPage(), {
-          status: 500,
-          headers: { "content-type": "text/html; charset=utf-8" },
-        });
-      }
-    }
+    return withSecurityHeaders(await handle(request, env, ctx));
+  },
+};
+
+async function handle(request: Request, env: unknown, ctx: unknown): Promise<Response> {
+  const url = new URL(request.url);
+  // Secondary domains (www, tremola.studio, tremola.vn) → 301 to the canonical origin, HTTPS.
+  if (REDIRECT_HOSTS.has(url.hostname)) {
+    return Response.redirect(`${CANONICAL_ORIGIN}${url.pathname}${url.search}`, 301);
+  }
+  const redirect = permanentRedirect(request, url);
+  if (redirect) return redirect;
+  if (
+    url.pathname.startsWith("/media/") &&
+    (request.method === "GET" || request.method === "HEAD")
+  ) {
     try {
-      const cacheable = isCacheablePage(request, url);
-      const edge = cacheable ? edgeCache() : null;
-      if (edge) {
-        const hit = await edge.match(cacheKey(url));
-        if (hit) return withHeader(hit, "x-edge-cache", "HIT");
-      }
-      const handler = await getServerEntry();
-      const response = await normalizeCatastrophicSsrResponse(
-        await handler.fetch(request, env, ctx),
-      );
-      if (
-        edge &&
-        response.status === 200 &&
-        isHtml(response) &&
-        !response.headers.has("set-cookie")
-      ) {
-        // Store a copy at the edge; the browser always revalidates (max-age=0).
-        const stored = new Response(response.clone().body, response);
-        stored.headers.set("cache-control", `public, max-age=${EDGE_TTL_SECONDS}`);
-        await edge.put(cacheKey(url), stored);
-        return withHeader(response, "x-edge-cache", "MISS");
-      }
-      return response;
+      const { handleMedia } = await import("./server/media.server");
+      return await handleMedia(request);
+    } catch (error) {
+      console.error(error);
+      return new Response("Media error", { status: 500 });
+    }
+  }
+  if (url.pathname === "/api/health") {
+    // Uptime monitor target: checks the Worker and a cheap database read. Also keeps the
+    // Supabase Free project from pausing for inactivity.
+    try {
+      const { healthCheck } = await import("./server/health.server");
+      const h = await healthCheck();
+      return Response.json(h, {
+        status: h.ok ? 200 : 503,
+        headers: { "cache-control": "no-store" },
+      });
+    } catch (error) {
+      console.error(error);
+      return Response.json({ ok: false }, { status: 503 });
+    }
+  }
+  if (url.pathname === "/api/client-error" && request.method === "POST") {
+    // Browser error beacon → Worker Logs (Cloudflare Observability). Size-capped, never echoed.
+    try {
+      const origin = request.headers.get("origin");
+      if (origin && new URL(origin).host !== url.host) return new Response(null, { status: 204 });
+      const text = (await request.text()).slice(0, 5000);
+      console.error(`[client-error] ${text}`);
+    } catch {
+      /* ignore */
+    }
+    return new Response(null, { status: 204 });
+  }
+  if (url.pathname === "/api/pack/download" && request.method === "GET") {
+    try {
+      const { handlePackDownload } = await import("./server/pack-download.server");
+      return await handlePackDownload(request);
     } catch (error) {
       console.error(error);
       return new Response(renderErrorPage(), {
@@ -185,5 +169,34 @@ export default {
         headers: { "content-type": "text/html; charset=utf-8" },
       });
     }
-  },
-};
+  }
+  try {
+    const cacheable = isCacheablePage(request, url);
+    const edge = cacheable ? edgeCache() : null;
+    if (edge) {
+      const hit = await edge.match(cacheKey(url));
+      if (hit) return withHeader(hit, "x-edge-cache", "HIT");
+    }
+    const handler = await getServerEntry();
+    const response = await normalizeCatastrophicSsrResponse(await handler.fetch(request, env, ctx));
+    if (
+      edge &&
+      response.status === 200 &&
+      isHtml(response) &&
+      !response.headers.has("set-cookie")
+    ) {
+      // Store a copy at the edge; the browser always revalidates (max-age=0).
+      const stored = new Response(response.clone().body, response);
+      stored.headers.set("cache-control", `public, max-age=${EDGE_TTL_SECONDS}`);
+      await edge.put(cacheKey(url), stored);
+      return withHeader(response, "x-edge-cache", "MISS");
+    }
+    return response;
+  } catch (error) {
+    console.error(error);
+    return new Response(renderErrorPage(), {
+      status: 500,
+      headers: { "content-type": "text/html; charset=utf-8" },
+    });
+  }
+}
