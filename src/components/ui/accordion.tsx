@@ -40,7 +40,12 @@ const AccordionContent = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <AccordionPrimitive.Content
     ref={ref}
-    className="overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down"
+    className={cn(
+      "overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down",
+      // forceMount keeps the answer in the server HTML (search engines read it); Radix then never
+      // sets `hidden`, so a closed panel collapses to zero height and is hidden from screen readers.
+      props.forceMount && "data-[state=closed]:h-0 data-[state=closed]:invisible",
+    )}
     {...props}
   >
     <div className={cn("pb-4 pt-0", className)}>{children}</div>

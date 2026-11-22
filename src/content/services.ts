@@ -167,3 +167,20 @@ const vi: ServicesContent = {
 };
 
 export const servicesContent: Record<Locale, ServicesContent> = { en, vi };
+
+/** FAQPage structured data from the visible FAQ (answers are server-rendered via forceMount). */
+export function faqJsonLd(locale: Locale) {
+  return {
+    type: "application/ld+json",
+    children: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      inLanguage: locale,
+      mainEntity: servicesContent[locale].faq.map((f) => ({
+        "@type": "Question",
+        name: f.q,
+        acceptedAnswer: { "@type": "Answer", text: f.a },
+      })),
+    }),
+  };
+}

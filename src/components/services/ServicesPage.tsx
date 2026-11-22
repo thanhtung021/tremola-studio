@@ -171,7 +171,9 @@ export function ServicesPage({ locale }: { locale: Locale }) {
               <AccordionTrigger className="py-6 text-body text-ivory hover:no-underline hover:text-body">
                 {f.q}
               </AccordionTrigger>
-              <AccordionContent className="pb-6 text-body">{f.a}</AccordionContent>
+              <AccordionContent forceMount className="pb-6 text-body">
+                {f.a}
+              </AccordionContent>
             </AccordionItem>
           ))}
         </Accordion>
