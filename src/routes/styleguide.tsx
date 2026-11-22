@@ -11,10 +11,10 @@ import { placeholderMedia, placeholderTrack } from "@/content/media";
 export const Route = createFileRoute("/styleguide")({
   head: () => ({
     meta: [
-      { title: "Styleguide · Tremola Studio" },
+      { title: "Styleguide | Tremola Studio" },
       { name: "description", content: "Internal review of the Tremola Studio design system." },
       { name: "robots", content: "noindex" },
-      { property: "og:title", content: "Styleguide · Tremola Studio" },
+      { property: "og:title", content: "Styleguide | Tremola Studio" },
       {
         property: "og:description",
         content: "Internal review of the Tremola Studio design system.",

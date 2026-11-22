@@ -51,12 +51,13 @@ export const vi: Dict = {
     audit: "Nhận Sound Audit miễn phí",
   },
   meta: {
+    homeTitle: "Tremola Studio | Âm thanh cho game và ứng dụng",
     home: "Tremola Studio tạo cho game và ứng dụng một âm thanh của riêng mình: nhạc adaptive, SFX, UI sound và sonic branding, mang chất liệu Đông Á.",
     work: "Nghe các dự án âm thanh của Tremola Studio: nhạc chủ đề, nhạc adaptive, UI sound kit và sonic logo.",
     services:
-      "Các gói Game Audio, Product & App Sound và Media của Tremola Studio. Báo giá theo gói, mặc định độc quyền.",
+      "Các gói âm thanh cho game, cho sản phẩm và ứng dụng, và cho media của Tremola Studio. Báo giá theo gói, mặc định độc quyền.",
     audit:
-      "Gửi trailer hoặc bản quay ứng dụng. Tremola Studio gửi lại Sound Audit 60–90 giây miễn phí, làm lại âm thanh cho một khoảnh khắc.",
+      "Gửi trailer hoặc bản quay ứng dụng. Tremola Studio gửi lại bản Sound Audit miễn phí dài 60 đến 90 giây, làm lại âm thanh cho một khoảnh khắc.",
     freePack: "Tải miễn phí one-shot đàn tranh, đàn nguyệt, sáo trúc và T'rưng từ Tremola Studio.",
     about:
       "Tremola Studio là studio âm thanh do nhà soạn nhạc dẫn dắt, đến từ Việt Nam. Câu chuyện tên gọi, logo và con người phía sau.",

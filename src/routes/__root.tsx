@@ -133,10 +133,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Tremola Studio · Sound for games & apps" },
+      { title: "Tremola Studio | Sound for Games and Apps" },
       { name: "description", content: "Tremola gives games and apps a sound of their own." },
       { name: "author", content: "Tremola Studio" },
-      { property: "og:title", content: "Tremola Studio · Sound for games & apps" },
+      { property: "og:title", content: "Tremola Studio | Sound for Games and Apps" },
       { property: "og:description", content: "Tremola gives games and apps a sound of their own." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

@@ -49,12 +49,13 @@ export const en = {
     audit: "Get a free Sound Audit",
   },
   meta: {
+    homeTitle: "Tremola Studio | Sound for Games and Apps",
     home: "Tremola Studio gives games and apps a sound of their own: adaptive music, SFX, UI sound and sonic branding, rooted in East Asian craft.",
     work: "Listen to game and app sound by Tremola Studio: main themes, adaptive music, UI sound kits and sonic logos.",
     services:
-      "Game Audio, Product & App Sound and Media packages from Tremola Studio. Priced by package, exclusive by default.",
+      "Game audio, product and app sound, and media packages from Tremola Studio. Priced by package, exclusive by default.",
     audit:
-      "Send your trailer or app recording. Tremola Studio sends back a free 60–90 second Sound Audit with one moment re-scored.",
+      "Send your trailer or app recording. Tremola Studio sends back a free 60 to 90 second Sound Audit with one moment re-scored.",
     freePack:
       "Download free one-shots of đàn tranh, đàn nguyệt, sáo trúc and T'rưng from Tremola Studio.",
     about:

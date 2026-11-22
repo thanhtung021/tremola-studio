@@ -58,7 +58,7 @@ export function alternateLinks(locale: Locale, path: string, origin: string) {
 export function pageHead(locale: Locale, key: keyof Dict["pages"], ctx?: HeadCtx) {
   const d = dictionaries[locale];
   const origin = originFrom(ctx);
-  const title = key === "home" ? d.footer.descriptor : `${d.pages[key]} · Tremola Studio`;
+  const title = key === "home" ? d.meta.homeTitle : `${d.pages[key]} | Tremola Studio`;
   const path = pagePaths[key];
   const image = origin ? `${origin}/og-image.png` : null;
   return {

@@ -16,7 +16,9 @@ export function demoHead(
   locale: Locale,
   notFound: { title: string; description: string },
 ) {
-  const title = `${d?.title ?? notFound.title} · Tremola Studio`;
+  // Tab and search titles use plain punctuation: "Echoes · Asian Signature" → "Echoes: Asian Signature".
+  const name = (d?.title ?? notFound.title).replace(/\s+·\s+/g, ": ");
+  const title = `${name} | Tremola Studio`;
   const description = d?.summary ?? notFound.description;
   const abs = (u: string) => (/^https?:/.test(u) ? u : `${origin}${u}`);
   return {
