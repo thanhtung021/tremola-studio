@@ -11,3 +11,9 @@
 **Kiểm tra:** lint 0 lỗi (11 cảnh báo cũ) · tsc OK · test 26/26 · build OK · 2 file mới trên tremolastudio.com/media trả 200.
 
 **Chờ owner:** đồng ý push + deploy production (lần deploy này cũng đưa lên commit 01fab6b — hồ sơ công khai YouTube/Fiverr/itch cho Footer + sameAs).
+
+## Đã lên production (25/11)
+
+- Chủ dự án duyệt → main fast-forward lên b8ff2c7, push; CI run 45562758123: verify + production đều xanh.
+- Kiểm tra web thật: /work/echoes-of-the-nine-mountains, /work/echoes-asian-signature và hai trang /vi tương ứng đều dùng video mới (70bb4786b4, efea5f660a, eb3986f3d6, ddb0bd246a); không còn chữ "Original concept".
+- Lần deploy này cũng đưa lên 01fab6b: chân trang có YouTube @TremolaStudio, itch.io và Fiverr. Link Fiverr đang trỏ @tremolastudio (tài khoản chủ dự án định đóng) — nên đổi sang @sylvanusfinnian.
