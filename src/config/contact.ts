@@ -16,7 +16,7 @@ export const primaryEmail = contact.emails[0];
  */
 export const socialProfiles: { label: string; href: string }[] = [
   { label: "YouTube", href: "https://www.youtube.com/@TremolaStudio" },
-  { label: "Fiverr", href: "https://www.fiverr.com/tremolastudio" },
+  { label: "Fiverr", href: "https://www.fiverr.com/sylvanusfinnian" },
   { label: "itch.io", href: "https://tremolastudio.itch.io" },
 ];
 
